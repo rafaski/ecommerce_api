@@ -147,8 +147,8 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-microservices_api/.env
-.venv
+*/.env
+*.venv
 env/
 venv/
 ENV/
@@ -178,3 +178,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# App
+*/debug.py
