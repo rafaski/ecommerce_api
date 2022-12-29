@@ -147,7 +147,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-ecommerce_api/.env
+*/.env
 *.venv
 env/
 venv/
@@ -180,4 +180,4 @@ dmypy.json
 cython_debug/
 
 # App
-ecommerce_api.debug.py
+*/debug.py
