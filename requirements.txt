@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+redis
+redis-om
+python-dotenv
+httpx
+PyJWT
+pydantic[email]
