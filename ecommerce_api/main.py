@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from ecommerce_api.routers.inventory import router as inventory_router
+from ecommerce_api.routers.products import router as inventory_router
 
 description = """
 Microservices API

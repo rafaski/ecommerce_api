@@ -6,3 +6,4 @@ python-dotenv
 httpx
 PyJWT
 pydantic[email]
+motor

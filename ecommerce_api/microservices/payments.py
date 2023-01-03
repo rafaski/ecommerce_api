@@ -3,7 +3,7 @@ from fastapi.background import BackgroundTasks
 import httpx
 import time
 
-from ecommerce_api.redis_connection import redis
+from ecommerce_api.dependencies.redis_connection import redis
 from ecommerce_api.schemas import Order
 from ecommerce_api.enums import OrderStatus
 

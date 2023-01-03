@@ -1,7 +1,18 @@
 from redis_om import HashModel
 from pydantic import BaseModel, Field, EmailStr
+from typing import Optional, Any
+from datetime import datetime
 
-from ecommerce_api.redis_connection import redis
+from ecommerce_api.dependencies.redis_connection import redis_conn
+
+
+class Output(BaseModel):
+    """
+    user output layout
+    """
+    success: bool
+    message: Optional[str] = None
+    results: Optional[Any] = None
 
 
 class Product(HashModel):
@@ -10,13 +21,14 @@ class Product(HashModel):
     """
     name: str
     price: float
-    available_quantity: int
+    quantity: int
+    description: Optional[str] = None
 
     class Meta:
         """
-        connecting product class to redis db
+        connecting Product class to redis db
         """
-        database = redis
+        database = redis_conn
 
 
 class Order(HashModel):
@@ -34,16 +46,17 @@ class Order(HashModel):
         """
         connecting product class to redis db
         """
-        database = redis
+        database = redis_conn
 
 
 class User(BaseModel):
     """
     User schema
     """
-    fullname: str = Field(default=None)
-    email: EmailStr = Field(default=None)
-    password: str = Field(default=None)
+    fullname: str = Field(default=None, index=True)
+    email: EmailStr = Field(default=None, index=True)
+    password: str = Field(default=None, index=True)
+    join_date: str = datetime.date
 
     class Config:
         """

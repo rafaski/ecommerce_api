@@ -1,12 +1,12 @@
-"""
-Verification of the protected route.
-Check if the HTTP request is authorized.
-"""
-
 from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from ecommerce_api.auth.jwt_handler import decode_jwt
+
+"""
+Verification of the protected route.
+Check if the HTTP request is authorized.
+"""
 
 
 class JwtBearer(HTTPBearer):
