@@ -31,6 +31,15 @@ class Product(HashModel):
         database = redis_conn
 
 
+# prod1 = Product(
+#     name="hello",
+#     price=1,
+#     quantity=100
+# )
+#
+# prod1.save()
+
+
 class Order(HashModel):
     """
     Order schema
@@ -56,7 +65,7 @@ class User(BaseModel):
     fullname: str = Field(default=None, index=True)
     email: EmailStr = Field(default=None, index=True)
     password: str = Field(default=None, index=True)
-    join_date: str = datetime.date
+    join_date: datetime = datetime.now()
 
     class Config:
         """

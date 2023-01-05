@@ -1,8 +1,8 @@
 from motor import motor_asyncio
-from os import getenv
 
-url = getenv("MONGODB_URL")
-client = motor_asyncio.AsyncIOMotorClient(url)
+from ecommerce_api.settings import MONGODB_URL
+
+client = motor_asyncio.AsyncIOMotorClient(MONGODB_URL)
 database = client.Users
 collection = database.users
 

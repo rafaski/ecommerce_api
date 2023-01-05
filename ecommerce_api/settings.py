@@ -16,3 +16,12 @@ MONGODB_URL = load_variable(
     name="MONGODB_URL",
     default=f"mongodb://{MONGODB_HOST}:{MONGODB_PORT}"
 )
+
+# Dependencies - redis
+REDIS_PUBLIC_ENDPOINT = load_variable(name="REDIS_PUBLIC_ENDPOINT")
+REDIS_PORT = load_variable(name="REDIS_PORT")
+REDIS_PASSWORD = load_variable(name="dOQ9nK2zbcb51gCHQjNTRKiUjBPQvgxP")
+
+# JWT
+ALGORITHM = load_variable(name="ALGORITHM")
+JWT_SECRET_KEY = load_variable(name="JWT_SECRET_KEY")
