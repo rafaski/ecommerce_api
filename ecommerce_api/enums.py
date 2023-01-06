@@ -1,6 +1,15 @@
 from enum import Enum
 
 
+class Category(str, Enum):
+    """
+    Enums for product category
+    """
+    CAT1 = "category 1"
+    CAT2 = "category 2"
+    CAT3 = "category 3"
+
+
 class OrderStatus(str, Enum):
     """
     Enums for customer order status

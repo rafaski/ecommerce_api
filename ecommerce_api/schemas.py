@@ -1,9 +1,10 @@
-from redis_om import HashModel
-from pydantic import BaseModel, Field, EmailStr
+from aredis_om import Field, HashModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional, Any
 from datetime import datetime
 
-from ecommerce_api.dependencies.redis_connection import redis_conn
+from ecommerce_api.dependencies.redis_connection import redis_connection
+from ecommerce_api.enums import Category
 
 
 class Output(BaseModel):
@@ -19,25 +20,18 @@ class Product(HashModel):
     """
     Product schema
     """
-    name: str
-    price: float
-    quantity: int
+    name: str = Field(index=True,full_text_search=True)
+    price: float = Field
+    quantity: int = Field
+    category: Category = Field(index=True)
     description: Optional[str] = None
+    date_posted: datetime = datetime.today()
 
     class Meta:
         """
-        connecting Product class to redis db
+        connecting product class to redis db
         """
-        database = redis_conn
-
-
-# prod1 = Product(
-#     name="hello",
-#     price=1,
-#     quantity=100
-# )
-#
-# prod1.save()
+        database = redis_connection
 
 
 class Order(HashModel):
@@ -55,7 +49,7 @@ class Order(HashModel):
         """
         connecting product class to redis db
         """
-        database = redis_conn
+        database = redis_connection
 
 
 class User(BaseModel):
@@ -65,7 +59,7 @@ class User(BaseModel):
     fullname: str = Field(default=None, index=True)
     email: EmailStr = Field(default=None, index=True)
     password: str = Field(default=None, index=True)
-    join_date: datetime = datetime.now()
+    join_date: datetime = datetime.today()
 
     class Config:
         """
@@ -97,3 +91,4 @@ class UserLogin(BaseModel):
                 "password": "1234"
             }
         }
+

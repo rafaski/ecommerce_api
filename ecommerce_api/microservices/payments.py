@@ -3,7 +3,7 @@ from fastapi.background import BackgroundTasks
 import httpx
 import time
 
-from ecommerce_api.dependencies.redis_connection import redis_conn
+from ecommerce_api.dependencies.redis_connection import redis_connection
 from ecommerce_api.schemas import Order
 from ecommerce_api.enums import OrderStatus
 
@@ -30,7 +30,7 @@ def get_order(pk: str) -> Order:
     :return: order based on order primary key
     """
     order = Order.get(pk)
-    redis_conn.xadd("refund_order", order.dict(), "*")
+    redis_connection.xadd("refund_order", order.dict(), "*")
     return order
 
 
@@ -63,7 +63,7 @@ async def create_order(
         time.sleep(5)
         order.status = OrderStatus.COMPLETED
         order.save()
-        redis_conn.xadd("order_completed", order.dict(), "*")
+        redis_connection.xadd("order_completed", order.dict(), "*")
 
     background_tasks.add_task(order_completed, order)
 

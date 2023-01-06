@@ -1,6 +1,6 @@
 import time
 
-from ecommerce_api.dependencies.redis_connection import redis_conn
+from ecommerce_api.dependencies.redis_connection import redis_connection
 from ecommerce_api.schemas import Order
 from ecommerce_api.enums import OrderStatus
 
@@ -8,13 +8,13 @@ KEY = "refund_order"
 GROUP = "payment-group"
 
 try:
-    redis_conn.xgroup_create(KEY, GROUP)
+    redis_connection.xgroup_create(KEY, GROUP)
 except:
     print("Group already exists!")
 
 while True:
     try:
-        results = redis_conn.xreadgroup(GROUP, KEY, {KEY: ">"}, None)
+        results = redis_connection.xreadgroup(GROUP, KEY, {KEY: ">"}, None)
 
         if results:
             for result in results:

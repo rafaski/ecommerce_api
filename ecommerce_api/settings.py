@@ -1,5 +1,8 @@
 import os
 from typing import Any
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def load_variable(name: str, default: Any = None) -> str:
@@ -18,9 +21,9 @@ MONGODB_URL = load_variable(
 )
 
 # Dependencies - redis
-REDIS_PUBLIC_ENDPOINT = load_variable(name="REDIS_PUBLIC_ENDPOINT")
+REDIS_URL = load_variable(name="REDIS_URL")
 REDIS_PORT = load_variable(name="REDIS_PORT")
-REDIS_PASSWORD = load_variable(name="dOQ9nK2zbcb51gCHQjNTRKiUjBPQvgxP")
+REDIS_PASSWORD = load_variable(name="REDIS_PASSWORD")
 
 # JWT
 ALGORITHM = load_variable(name="ALGORITHM")
