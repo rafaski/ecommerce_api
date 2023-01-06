@@ -30,7 +30,7 @@ class ApiException(AppException):
 class Unauthorized(ApiException):
     http_status_code: status = status.HTTP_401_UNAUTHORIZED
     error_type: ErrorTypes = ErrorTypes.UNAUTHORIZED
-    details: str = "Your api key is invalid or not enough credits"
+    details: str = "Unauthorized. Invalid or expired token"
 
 
 class Forbidden(ApiException):

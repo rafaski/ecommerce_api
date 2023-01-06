@@ -8,3 +8,5 @@ httpx
 pyjwt
 pydantic[email]
 motor
+python-jose[cryptography]
+passlib[bcrypt]

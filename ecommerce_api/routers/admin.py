@@ -1,15 +1,13 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request
 from aredis_om import NotFoundError
 
 from ecommerce_api.schemas import Product
 from ecommerce_api.schemas import Output
-from ecommerce_api.auth.jwt_handler import sign_jwt
-from ecommerce_api.auth.jwt_bearer import JwtBearer
 
 router = APIRouter()
 
 
-@router.post("/create_product", response_model=Output)
+@router.post("/create_product", response_model=Output, tags=["admin"])
 async def create_product(request: Request, product: Product):
     """
     Creates new product
@@ -24,7 +22,7 @@ async def create_product(request: Request, product: Product):
     return Output(success=True, results=new_product)
 
 
-@router.put("/products/{pk}", response_model=Output)
+@router.put("/products/{pk}", response_model=Output, tags=["admin"])
 async def update_product(request: Request, pk: str, product: Product):
     """
     Updates existing product
@@ -39,7 +37,7 @@ async def update_product(request: Request, pk: str, product: Product):
     return Output(success=True, results=updated_product)
 
 
-@router.delete("/products/{pk}", response_model=Output)
+@router.delete("/products/{pk}", response_model=Output, tags=["admin"])
 async def get_product_by_id(request: Request, pk: str):
     """
     Delete product by a primary key

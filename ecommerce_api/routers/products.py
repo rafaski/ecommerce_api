@@ -8,7 +8,7 @@ from ecommerce_api.enums import Category
 router = APIRouter()
 
 
-@router.get("/products", response_model=Output)
+@router.get("/products", response_model=Output, tags=["products"])
 async def get_all_products(request: Request):
     """
     Get a list of all products
@@ -23,7 +23,7 @@ async def get_all_products(request: Request):
     return Output(success=True, results=products)
 
 
-@router.get("/products/{pk}", response_model=Output)
+@router.get("/products/{pk}", response_model=Output, tags=["products"])
 async def get_product_by_id(request: Request, pk: str):
     """
      Return a product by a primary key
@@ -45,7 +45,7 @@ def format_results(payload):
     return response
 
 
-@router.get("/products/category", response_model=Output)
+@router.get("/products/category", response_model=Output, tags=["products"])
 async def get_category(category: Category):
     """
     Get all products by category
@@ -55,7 +55,7 @@ async def get_category(category: Category):
     return Output(success=True, results=matching_products)
 
 
-@router.get("/products/name", response_model=Output)
+@router.get("/products/name", response_model=Output, tags=["products"])
 async def get_name(name: str):
     """
     Get all products with matching phrase in name

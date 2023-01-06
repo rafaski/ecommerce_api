@@ -1,10 +1,11 @@
 from aredis_om import Field, HashModel
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, validator
 from typing import Optional, Any
 from datetime import datetime
 
 from ecommerce_api.dependencies.redis_connection import redis_connection
-from ecommerce_api.enums import Category
+from ecommerce_api.enums import Category, OrderStatus
+from ecommerce_api.errors import BadRequest
 
 
 class Output(BaseModel):
@@ -27,6 +28,12 @@ class Product(HashModel):
     description: Optional[str] = None
     date_posted: datetime = datetime.today()
 
+    @validator("quantity")
+    def quantity_validator(cls, value: int):
+        if value < 0:
+            raise BadRequest()
+        return value
+
     class Meta:
         """
         connecting product class to redis db
@@ -39,11 +46,10 @@ class Order(HashModel):
     Order schema
     """
     product_id: str
-    price: float
-    fee: float
-    total: float
     quantity: int
-    status: str
+    price: float
+    total: float
+    status: OrderStatus
 
     class Meta:
         """
@@ -61,18 +67,6 @@ class User(BaseModel):
     password: str = Field(default=None, index=True)
     join_date: datetime = datetime.today()
 
-    class Config:
-        """
-        Config format class for User class
-        """
-        the_schema = {
-            "user_demo": {
-                "name": "YourName",
-                "email": "email@example.com",
-                "password": "1234"
-            }
-        }
-
 
 class UserLogin(BaseModel):
     """
@@ -80,15 +74,4 @@ class UserLogin(BaseModel):
     """
     email: EmailStr = Field(default=None)
     password: str = Field(default=None)
-
-    class Config:
-        """
-        Config format class for User class
-        """
-        the_schema = {
-            "user_demo": {
-                "email": "email@example.com",
-                "password": "1234"
-            }
-        }
 
