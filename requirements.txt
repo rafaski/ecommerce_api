@@ -1,10 +1,7 @@
 fastapi
 uvicorn
-aioredis
-redis
 redis-om
 python-dotenv
-httpx
 pyjwt
 pydantic[email]
 motor
