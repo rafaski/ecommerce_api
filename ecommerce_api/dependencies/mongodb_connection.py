@@ -1,39 +1,30 @@
 from motor import motor_asyncio
 
 from ecommerce_api.settings import MONGODB_URL
+from ecommerce_api.schemas import User
 
 client = motor_asyncio.AsyncIOMotorClient(MONGODB_URL)
 database = client.Users
 collection = database.users
 
 
-async def fetch_one(text: str):
-    document = await collection.find_one({"text": text})
-    return document
+async def get_user(email: str):
+    user = await collection.find_one({"email": email})
+    return user
 
 
-async def fetch_all(text: str):
-    documents = []
-    cursor = collection.find({})
-    # async for doc in cursor:
-    #     documents.append(1)
-    return documents
+async def get_all_users():
+    users = []
+    cursor = await collection.find({})
+    async for user in cursor:
+        users.append(User(**user))
+    return users
 
 
-async def create(text: str):
-    document = text
-    result = await collection.insert_one(document)
-    return document
+async def create_user(user: User):
+    await collection.insert_one(user)
+    return user
 
 
-async def update(par1, par2):
-    await collection.update_one({"title": par1}, {"$set": {
-        "val": par2
-    }})
-    document = await collection.find_one({"title": par1})
-    return document
-
-
-async def remove(par1):
-    await collection.delete_one({"title": par1})
-    return True
+async def remove_user(email: str):
+    await collection.delete_one({"email": email})

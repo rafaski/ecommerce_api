@@ -18,7 +18,7 @@ def sign_jwt(user_id: str):
         "expiry": time.time() + 60*60
     }
     token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=ALGORITHM)
-    return {"access_token": token}
+    return token
 
 
 def decode_jwt(token: str):
