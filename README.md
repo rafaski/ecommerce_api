@@ -1,14 +1,15 @@
 # E-commerce API
  
 ## Overview
-E-commerce API with payment microservices built with FastAPI.
+E-commerce API built with FastAPI.
 
 ### Key features:
 - Built with FastAPI
-- Inventory stored in redis cloud. 
-- User data in mongo db cloud.
-- Communication between the app and payment microservices with redis streams.
+- Inventory stored in redis cloud with async aredis_om. 
+- User data in async mongo db with motor.
 - User authentication with decoded JSON web tokens.
+- Admin endpoints protected with oauth2.
+- Data validation and hashing with HashModel
 
 ## Dependencies
 tbc

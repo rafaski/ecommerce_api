@@ -37,3 +37,4 @@ class ErrorTypes(str, Enum):
 
     # Mongo db errors
     MONGO_DB_ERROR = "mongo_db_error"
+    MONGO_DB_NO_USERS = "mongo_db_no_user"
