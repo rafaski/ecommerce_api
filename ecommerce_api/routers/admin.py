@@ -77,7 +77,7 @@ async def get_all(request: Request, order_id: str):
     return Output(success=True, results=orders)
 
 
-@router.get("/orders/{product_id}", response_model=Output)
+@router.get("/orders/{order_id}", response_model=Output)
 async def get_by_id(request: Request, order_id: str):
     """
      Get an order by order id (primary key)

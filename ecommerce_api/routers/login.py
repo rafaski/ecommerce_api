@@ -1,13 +1,12 @@
 from fastapi import APIRouter, Request
 from passlib.hash import bcrypt
 
-from ecommerce_api.schemas import Output
-from ecommerce_api.schemas import User, UserLogin
+from ecommerce_api.schemas import Output, User, UserLogin
 from ecommerce_api.auth.jwt_handler import sign_jwt
-from ecommerce_api.errors import Unauthorized
 from ecommerce_api.dependencies.mongodb_connection import (
-    create_user, get_all_users
+    create_user
 )
+from ecommerce_api.auth.auth import verify_login
 
 router = APIRouter(tags=["login"])
 
@@ -28,9 +27,6 @@ async def user_signup(request: Request, user: User):
 
 @router.post("/login", response_model=Output)
 async def user_login(request: Request, user: UserLogin):
-    users = await get_all_users()
-    for u in users:
-        if not user.email == u.email and user.password == u.password:
-            raise Unauthorized()
+    await verify_login(email=user.email, password=user.password)
     user_signed = sign_jwt(email=user.email)
     return Output(success=True, results=user_signed)
