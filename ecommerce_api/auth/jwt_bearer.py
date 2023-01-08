@@ -10,10 +10,6 @@ class JwtBearer(HTTPBearer):
     Verification of the protected route.
     Check if the HTTP request is authorized.
     """
-
-    def __init__(self, auto_error: bool = True):
-        super(JwtBearer, self).__init__(auto_error=auto_error)
-
     async def __call__(self, request: Request):
         credentials: HTTPAuthorizationCredentials = await super(
             JwtBearer, self
