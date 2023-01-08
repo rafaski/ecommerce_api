@@ -55,19 +55,9 @@ class User(BaseModel):
     """
     User schema
     """
-    name: str = Field(default=None, index=True)
     email: EmailStr = Field(default=None, index=True)
     password: str = Field(default=None)
     join_date: datetime = datetime.today()
-
-    @classmethod
-    async def get_user(cls, email):
-        cls.email = email
-        return email
-
-    @staticmethod
-    def verify_password(self, password):
-        return True
 
 
 class UserLogin(BaseModel):

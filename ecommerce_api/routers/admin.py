@@ -1,9 +1,13 @@
 from fastapi import APIRouter, Request, Depends, HTTPException
 from aredis_om import NotFoundError
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+import jwt
 
 from ecommerce_api.schemas import Product
 from ecommerce_api.schemas import Output
+from ecommerce_api.auth.auth import authenticate_user
+from ecommerce_api.errors import Unauthorized
+from ecommerce_api.settings import JWT_SECRET_KEY, ALGORITHM
 from ecommerce_api.dependencies.mongodb_connection import (
     get_user, get_all_users, remove_user
 )
@@ -14,13 +18,17 @@ oauth_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 @router.post("/token")
-async def token_generate(form_data: OAuth2PasswordRequestForm = Depends()):
+async def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Generate admin access token
     """
+    user = await authenticate_user(form_data.username, form_data.password)
+    if not user:
+        raise Unauthorized()
+    token = jwt.encode(user, JWT_SECRET_KEY, algorithm=ALGORITHM)
     return Output(
         success=True,
-        results={"access_token": form_data.username, "token_type": "bearer"}
+        results={"access_token": token, "token_type": "bearer"}
     )
 
 
