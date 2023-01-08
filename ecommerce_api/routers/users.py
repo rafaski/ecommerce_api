@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request
+from passlib.hash import bcrypt
 
 from ecommerce_api.schemas import Output
 from ecommerce_api.schemas import User, UserLogin
@@ -14,9 +15,14 @@ router = APIRouter()
 @router.post("/user/signup", response_model=Output, tags=["user"])
 def user_signup(request: Request, user: User):
     """
-    User signup
+    User signup, secure hashed password
     """
-    await create_user(user=user)
+    new_user = User(
+        name=user.name,
+        email=user.email,
+        password=bcrypt(user.password)
+    )
+    await create_user(user=new_user)
     user_signed = sign_jwt(user_id=user.email)
     return Output(success=True, results=user_signed)
 
