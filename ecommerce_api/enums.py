@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Category(str, Enum):
+class ProductCategory(str, Enum):
     """
     Enums for product category
     """
@@ -31,10 +31,11 @@ class ErrorTypes(str, Enum):
     UNAUTHORIZED = "unauthorized"
     FORBIDDEN = "forbidden"
     BAD_REQUEST = "bad_request"
+    NOT_FOUND = "not_found"
 
     # Redis errors
     REDIS_ERROR = "redis_error"
 
     # Mongo db errors
     MONGO_DB_ERROR = "mongo_db_error"
-    MONGO_DB_NO_USERS = "mongo_db_no_user"
+    MONGO_DB_NO_USER = "mongo_db_no_user"

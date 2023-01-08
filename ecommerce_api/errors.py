@@ -45,6 +45,12 @@ class BadRequest(ApiException):
     details: str = "Bad request"
 
 
+class NotFound(ApiException):
+    http_status_code: status = status.HTTP_404_NOT_FOUND
+    error_type: ErrorTypes = ErrorTypes.NOT_FOUND
+    details: str = "Bad request"
+
+
 class RedisException(AppException):
     error_type: ErrorTypes = ErrorTypes.REDIS_ERROR
     details: str = "Redis error"
@@ -56,5 +62,5 @@ class MongoDbError(AppException):
 
 
 class MongoDbNoUser(AppException):
-    error_type: ErrorTypes = ErrorTypes.MONGO_DB_NO_USERS
+    error_type: ErrorTypes = ErrorTypes.MONGO_DB_NO_USER
     details: str = "No user with this email"

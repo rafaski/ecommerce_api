@@ -4,7 +4,7 @@ from typing import Optional, Any
 from datetime import datetime
 
 from ecommerce_api.dependencies.redis_connection import redis_connection
-from ecommerce_api.enums import Category, OrderStatus
+from ecommerce_api.enums import ProductCategory, OrderStatus
 
 
 class Output(BaseModel):
@@ -20,12 +20,12 @@ class Product(HashModel):
     """
     Product schema
     """
-    name: str = Field(index=True,full_text_search=True)
-    price: float = Field
+    name: str = Field(index=True, full_text_search=True)
+    price: float = Field(index=True)
     quantity: int = Field(ge=0)
-    category: Category = Field(index=True)
+    category: ProductCategory = Field(index=True)
     description: Optional[str] = None
-    date_posted: datetime = datetime.today()
+    date_posted: str = datetime.today()
 
     class Meta:
         """
@@ -41,8 +41,11 @@ class Order(HashModel):
     product_id: str
     quantity: int = Field(ge=1)
     price: float
-    total: float
-    status: OrderStatus
+    status: OrderStatus = Field(index=True, default=OrderStatus.PENDING)
+
+    @property
+    def total(self):
+        return self.quantity * self.price
 
     class Meta:
         """
@@ -57,7 +60,7 @@ class User(BaseModel):
     """
     email: EmailStr = Field(default=None, index=True)
     password: str = Field(default=None)
-    join_date: datetime = datetime.today()
+    join_date: str = datetime.today()
 
 
 class UserLogin(BaseModel):

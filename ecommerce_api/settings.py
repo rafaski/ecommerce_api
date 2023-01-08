@@ -21,9 +21,12 @@ MONGODB_URL = load_variable(
 )
 
 # Dependencies - redis
-REDIS_URL = load_variable(name="REDIS_URL")
-REDIS_PORT = load_variable(name="REDIS_PORT")
-REDIS_PASSWORD = load_variable(name="REDIS_PASSWORD")
+REDIS_HOST = load_variable(name="REDIS_HOST", default="127.0.0.1")
+REDIS_PORT = load_variable(name="REDIS_PORT", default="6379")
+REDIS_URL = load_variable(
+    name="REDIS_URL",
+    default=f"redis://{REDIS_HOST}:{REDIS_PORT}"
+)
 
 # JWT
 ALGORITHM = load_variable(name="ALGORITHM")

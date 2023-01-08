@@ -1,0 +1,19 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - 8080:8080
+    depends_on:
+      - redis
+  redis:
+    image: redis/redis-stack
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 6379:6379
+  mongo:
+    image: mongo
+    restart: always

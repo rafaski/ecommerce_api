@@ -9,29 +9,28 @@ from ecommerce_api.dependencies.mongodb_connection import (
     create_user, get_all_users
 )
 
-router = APIRouter()
+router = APIRouter(tags=["user"])
 
 
-@router.post("/user/signup", response_model=Output, tags=["user"])
-def user_signup(request: Request, user: User):
+@router.post("/user/signup", response_model=Output)
+async def user_signup(request: Request, user: User):
     """
     User signup, secure hashed password
     """
     new_user = User(
-        name=user.name,
         email=user.email,
         password=bcrypt(user.password)
     )
     await create_user(user=new_user)
-    user_signed = sign_jwt(user_id=user.email)
+    user_signed = sign_jwt(email=user.email)
     return Output(success=True, results=user_signed)
 
 
-@router.post("/user/login", response_model=Output, tags=["user"])
-def user_login(request: Request, user: UserLogin):
+@router.post("/user/login", response_model=Output)
+async def user_login(request: Request, user: UserLogin):
     users = await get_all_users()
     for u in users:
         if not user.email == u.email and user.password == u.password:
             raise Unauthorized()
-    user_signed = sign_jwt(user_id=user.email)
+    user_signed = sign_jwt(email=user.email)
     return Output(success=True, results=user_signed)

@@ -9,21 +9,29 @@ Signing, encoding, decoding and returning JSON Web Token (JWS)
 """
 
 
-def sign_jwt(user_id: str):
+def sign_jwt(email: str) -> str:
     """
     Returns signed JWT string
     """
     payload = {
-        "user_id": user_id,
-        "expiry": time.time() + 60*60
+        "email": email,
+        "ttl": time.time() + 60*60
     }
-    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=ALGORITHM)
+    token = jwt.encode(
+        payload=payload,
+        key=JWT_SECRET_KEY,
+        algorithm=ALGORITHM
+    )
     return token
 
 
-def decode_jwt(token: str):
-    decode_token = jwt.decode(token, JWT_SECRET_KEY, algorithm=ALGORITHM)
-    if decode_token.get("expires") <= time.time():
+def decode_jwt(token: str) -> str:
+    decode_token = jwt.decode(
+        jwt=token,
+        key=JWT_SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+    if decode_token.get("ttl") <= time.time():
         raise Unauthorized()
     return decode_token
 

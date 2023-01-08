@@ -1,4 +1,4 @@
-from fastapi import Request, HTTPException
+from fastapi import Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from ecommerce_api.auth.jwt_handler import decode_jwt
@@ -26,10 +26,8 @@ class JwtBearer(HTTPBearer):
             raise Unauthorized()
 
     @staticmethod
-    def verify_jwt(jwt_token: str):
-        is_token_valid: bool = False
-        payload = decode_jwt(jwt_token)
+    def verify_jwt(jwt_token: str) -> bool:
+        payload = decode_jwt(token=jwt_token)
         if payload:
-            is_token_valid = True
-        return is_token_valid
+            return True
 
