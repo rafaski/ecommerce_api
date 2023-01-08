@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Request
-from aredis_om import NotFoundError
 
-from ecommerce_api.schemas import Product
-from ecommerce_api.schemas import Output
+from ecommerce_api.schemas import Product, Output
 from ecommerce_api.enums import ProductCategory
+from ecommerce_api.errors import NotFound
 
 router = APIRouter(tags=["products"])
 
@@ -36,10 +35,9 @@ async def get_by_id(request: Request, product_id: str):
     """
      Return a product by a primary key
     """
-    try:
-        product = await Product.get(pk=product_id)
-    except NotFoundError:
-        return Output(success=False, message="No product with this ID")
+    product = await Product.get(pk=product_id)
+    if not product:
+        raise NotFound()
     return Output(success=True, results=product)
 
 

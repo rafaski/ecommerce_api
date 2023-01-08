@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from ecommerce_api.routers.root import router as root_router
 from ecommerce_api.routers.admin import router as admin_router
-from ecommerce_api.routers.users import router as users_router
+from ecommerce_api.routers.login import router as users_router
 from ecommerce_api.routers.products import router as products_router
 from ecommerce_api.routers.orders import router as orders_router
 

@@ -2,8 +2,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 import jwt
 
-from ecommerce_api.schemas import Product
-from ecommerce_api.schemas import Output
+from ecommerce_api.schemas import Product, Order, Output
 from ecommerce_api.auth.auth import authenticate_user
 from ecommerce_api.errors import Unauthorized, NotFound
 from ecommerce_api.settings import JWT_SECRET_KEY, ALGORITHM
@@ -11,9 +10,7 @@ from ecommerce_api.dependencies.mongodb_connection import (
     get_user, get_all_users, remove_user
 )
 
-router = APIRouter(tags=["admin"])
-
-# TODO: admin should see all orders made by users
+router = APIRouter(tags=["admin"], prefix="/admin")
 
 
 @router.post("/token", response_model=Output)
@@ -58,13 +55,37 @@ async def update_product(request: Request, product_id: str, product: Product):
 @router.delete("/products/{product_id}", response_model=Output)
 async def delete_product(request: Request, product_id: str):
     """
-    Delete product by a primary key
+    Delete product by product id (primary key)
     """
     product = await Product.get(pk=product_id)
     if not product:
-        raise NotFound
+        raise NotFound()
     await product.delete(pk=product_id)
     return Output(success=True, message="Product deleted")
+
+
+@router.get("orders/all", response_model=Output)
+async def get_all(request: Request, order_id: str):
+    """
+    Get all orders
+    """
+    orders = []
+    stored_orders = await Order.all_pks()
+    async for product_id in stored_orders:
+        order = await Order.get(pk=order_id)
+        orders.append(order)
+    return Output(success=True, results=orders)
+
+
+@router.get("/orders/{product_id}", response_model=Output)
+async def get_by_id(request: Request, order_id: str):
+    """
+     Get an order by order id (primary key)
+    """
+    order = await Order.get(pk=order_id)
+    if not order:
+        raise NotFound()
+    return Output(success=True, results=order)
 
 
 @router.get("/users/all", response_model=Output)
@@ -83,7 +104,7 @@ async def get_user(request: Request, email: str):
     """
     user = await get_user(email=email)
     if not user:
-        raise NotFound
+        raise NotFound()
     return Output(success=True, results=user)
 
 

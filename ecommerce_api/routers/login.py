@@ -9,10 +9,10 @@ from ecommerce_api.dependencies.mongodb_connection import (
     create_user, get_all_users
 )
 
-router = APIRouter(tags=["user"])
+router = APIRouter(tags=["login"])
 
 
-@router.post("/user/signup", response_model=Output)
+@router.post("/signup", response_model=Output)
 async def user_signup(request: Request, user: User):
     """
     User signup, secure hashed password
@@ -26,7 +26,7 @@ async def user_signup(request: Request, user: User):
     return Output(success=True, results=user_signed)
 
 
-@router.post("/user/login", response_model=Output)
+@router.post("/login", response_model=Output)
 async def user_login(request: Request, user: UserLogin):
     users = await get_all_users()
     for u in users:

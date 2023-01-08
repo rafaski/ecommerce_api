@@ -19,6 +19,11 @@ async def authenticate_user(email: str, password: str) -> NoReturn | dict:
         raise Unauthorized()
     return user
 
+# users = await get_all_users()
+#     for u in users:
+#         if not user.email == u.email and user.password == u.password:
+#             raise Unauthorized()
+
 # async def get_current_user(token: str = Depends(oauth_scheme)) -> :
 #     try:
 #         payload = jwt.decode(
