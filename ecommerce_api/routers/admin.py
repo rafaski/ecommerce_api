@@ -13,7 +13,7 @@ router = APIRouter()
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@router.get("/token")
+@router.post("/token")
 async def token_generate(form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Generate admin access token
