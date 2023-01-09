@@ -63,10 +63,10 @@ class User(BaseModel):
     join_date: str = datetime.today()
 
 
-class UserLogin(BaseModel):
-    """
-    User login schema
-    """
-    email: EmailStr = Field(default=None)
-    password: str = Field(default=None)
+# class UserLogin(BaseModel):
+#     """
+#     User login schema
+#     """
+#     email: EmailStr = Field(default=None)
+#     password: str = Field(default=None)
 

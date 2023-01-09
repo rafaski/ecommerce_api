@@ -1,11 +1,10 @@
 from fastapi import Request, APIRouter, Depends
 
-from ecommerce_api.schemas import Order, Product
-from ecommerce_api.schemas import Output
-from ecommerce_api.auth.jwt_bearer import JwtBearer
+from ecommerce_api.schemas import Order, Product,Output
 from ecommerce_api.errors import BadRequest
+from ecommerce_api.auth.oauth import get_current_user
 
-router = APIRouter(tags=["orders"], dependencies=[Depends(JwtBearer)])
+router = APIRouter(tags=["orders"], dependencies=[Depends(get_current_user)])
 
 
 @router.get("/orders/{product_id}", response_model=Output)

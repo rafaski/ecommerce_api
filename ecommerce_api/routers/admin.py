@@ -1,31 +1,15 @@
-from fastapi import APIRouter, Request, Depends
-from fastapi.security import OAuth2PasswordRequestForm
-import jwt
+from fastapi import APIRouter, Request
 
 from ecommerce_api.schemas import Product, Order, Output
-from ecommerce_api.auth.auth import authenticate_user
-from ecommerce_api.errors import Unauthorized, NotFound
-from ecommerce_api.settings import JWT_SECRET_KEY, ALGORITHM
+from ecommerce_api.errors import NotFound
 from ecommerce_api.dependencies.mongodb_connection import (
     get_user, get_all_users, remove_user
 )
 
-router = APIRouter(tags=["admin"], prefix="/admin")
-
-
-@router.post("/token", response_model=Output)
-async def generate_token(form_data=Depends(OAuth2PasswordRequestForm)):
-    """
-    Generate admin access token
-    """
-    user = await authenticate_user(form_data.username, form_data.password)
-    if not user:
-        raise Unauthorized()
-    token = jwt.encode(payload=user, key=JWT_SECRET_KEY, algorithm=ALGORITHM)
-    return Output(
-        success=True,
-        results={"access_token": token, "token_type": "bearer"}
-    )
+router = APIRouter(
+    tags=["admin"],
+    prefix="/admin",
+)
 
 
 @router.post("/products/new", response_model=Output)
@@ -64,7 +48,7 @@ async def delete_product(request: Request, product_id: str):
     return Output(success=True, message="Product deleted")
 
 
-@router.get("orders/all", response_model=Output)
+@router.get("/orders/all", response_model=Output)
 async def get_all(request: Request, order_id: str):
     """
     Get all orders

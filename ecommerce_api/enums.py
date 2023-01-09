@@ -5,9 +5,8 @@ class ProductCategory(str, Enum):
     """
     Enums for product category
     """
-    CAT1 = "category 1"
-    CAT2 = "category 2"
-    CAT3 = "category 3"
+    LAPTOPS = "laptops"
+    ACCESSORIES = "accessories"
 
 
 class OrderStatus(str, Enum):

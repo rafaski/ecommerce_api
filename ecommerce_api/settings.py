@@ -31,3 +31,8 @@ REDIS_URL = load_variable(
 # JWT
 ALGORITHM = load_variable(name="ALGORITHM")
 JWT_SECRET_KEY = load_variable(name="JWT_SECRET_KEY")
+
+# ADMIN
+ADMIN_SECRET_KEY = load_variable(name="ADMIN_SECRET_KEY")
+ADMIN_USERNAME = load_variable(name="ADMIN_USERNAME")
+
