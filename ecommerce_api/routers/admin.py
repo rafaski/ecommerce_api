@@ -1,14 +1,16 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends
 
 from ecommerce_api.schemas import Product, Order, Output
 from ecommerce_api.errors import NotFound
 from ecommerce_api.dependencies.mongodb_connection import (
     get_user, get_all_users, remove_user
 )
+from ecommerce_api.auth.auth import authenticate_admin
 
 router = APIRouter(
     tags=["admin"],
     prefix="/admin",
+    dependencies=[Depends(authenticate_admin)]
 )
 
 
@@ -64,7 +66,7 @@ async def get_all(request: Request, order_id: str):
 @router.get("/orders/{order_id}", response_model=Output)
 async def get_by_id(request: Request, order_id: str):
     """
-     Get an order by order id (primary key)
+    Get an order by order id (primary key)
     """
     order = await Order.get(pk=order_id)
     if not order:

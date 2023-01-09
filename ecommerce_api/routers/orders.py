@@ -2,7 +2,7 @@ from fastapi import Request, APIRouter, Depends
 
 from ecommerce_api.schemas import Order, Product,Output
 from ecommerce_api.errors import BadRequest
-from ecommerce_api.auth.oauth import get_current_user
+from ecommerce_api.auth.auth import get_current_user
 
 router = APIRouter(tags=["orders"], dependencies=[Depends(get_current_user)])
 

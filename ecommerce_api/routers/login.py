@@ -6,7 +6,7 @@ from ecommerce_api.auth.jwt_handler import encode_jwt
 from ecommerce_api.dependencies.mongodb_connection import (
     create_user
 )
-from ecommerce_api.auth.oauth import authenticate_user
+from ecommerce_api.auth.auth import authenticate_user
 from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(tags=["login"])

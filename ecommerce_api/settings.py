@@ -22,10 +22,15 @@ MONGODB_URL = load_variable(
 
 # Dependencies - redis
 REDIS_HOST = load_variable(name="REDIS_HOST", default="127.0.0.1")
-REDIS_PORT = load_variable(name="REDIS_PORT", default="6379")
-REDIS_URL = load_variable(
+REDIS_DATA_PORT = load_variable(name="REDIS_PORT", default="6379")
+REDIS_DATA_URL = load_variable(
     name="REDIS_URL",
-    default=f"redis://{REDIS_HOST}:{REDIS_PORT}"
+    default=f"redis://{REDIS_HOST}:{REDIS_DATA_PORT}"
+)
+REDIS_CACHE_PORT = load_variable(name="REDIS_PORT", default="6381")
+REDIS_CACHE_URL = load_variable(
+    name="REDIS_URL",
+    default=f"redis://{REDIS_HOST}:{REDIS_CACHE_PORT}"
 )
 
 # JWT
