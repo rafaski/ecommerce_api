@@ -1,5 +1,7 @@
 # E-commerce API
-WORK IN PROGRESS.
+
+### WORK IN PROGRESS.
+
 This application was built for educational purposes and is not intended for production use.
 
 ## Overview
