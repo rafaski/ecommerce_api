@@ -37,7 +37,7 @@ async def get_by_id(request: Request, product_id: str):
     """
     product = await Product.get(pk=product_id)
     if not product:
-        raise NotFound()
+        raise NotFound(details="Product not found")
     return Output(success=True, results=product)
 
 

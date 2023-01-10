@@ -25,8 +25,7 @@ async def create_order(request: Request, order: Order):
     """
     product = await Product.get(order.product_id)
     if not product:
-        raise BadRequest()
-
+        raise BadRequest(details="Product not found")
     product.quantity -= order.quantity
     await product.save()
     await order.save()

@@ -45,7 +45,7 @@ async def delete_product(request: Request, product_id: str):
     """
     product = await Product.get(pk=product_id)
     if not product:
-        raise NotFound()
+        raise NotFound(details="Product not found")
     await product.delete(pk=product_id)
     return Output(success=True, message="Product deleted")
 
@@ -70,7 +70,7 @@ async def get_by_id(request: Request, order_id: str):
     """
     order = await Order.get(pk=order_id)
     if not order:
-        raise NotFound()
+        raise NotFound(details="Order not found")
     return Output(success=True, results=order)
 
 
@@ -90,7 +90,7 @@ async def get_user(request: Request, email: str):
     """
     user = await get_user(email=email)
     if not user:
-        raise NotFound()
+        raise NotFound(details="User not found")
     return Output(success=True, results=user)
 
 

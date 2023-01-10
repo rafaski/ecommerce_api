@@ -20,7 +20,7 @@ Main features:
 - Data validation with `HashModel`
 - Password hashing with `bcrypt`
 - custom error handling
-- Slack notification of new orders
+- Slack notification of new orders with async `httpx`
 
 ### E-commerce API
 E-commerce API allows you to:

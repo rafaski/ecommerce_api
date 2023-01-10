@@ -32,7 +32,7 @@ def decode_jwt(token: str) -> str:
         algorithm=ALGORITHM
     )
     if decoded_token.get("ttl") <= time.time():
-        raise Unauthorized()
+        raise Unauthorized(details="Expired or invalid token")
     return decoded_token
 
 
