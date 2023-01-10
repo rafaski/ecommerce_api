@@ -3,6 +3,7 @@ from fastapi import Request, APIRouter, Depends
 from ecommerce_api.schemas import Order, Product,Output
 from ecommerce_api.errors import BadRequest
 from ecommerce_api.auth.auth import get_current_user
+from ecommerce_api.dependencies.slack_notifications import post_to_slack
 
 router = APIRouter(tags=["orders"], dependencies=[Depends(get_current_user)])
 
@@ -29,6 +30,7 @@ async def create_order(request: Request, order: Order):
     product.quantity -= order.quantity
     await product.save()
     await order.save()
+    await post_to_slack(order=order)
     return Output(success=True, results=order)
 
 

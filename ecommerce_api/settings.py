@@ -37,7 +37,11 @@ REDIS_CACHE_URL = load_variable(
 ALGORITHM = load_variable(name="ALGORITHM")
 JWT_SECRET_KEY = load_variable(name="JWT_SECRET_KEY")
 
-# ADMIN
+# admin
 ADMIN_SECRET_KEY = load_variable(name="ADMIN_SECRET_KEY")
 ADMIN_USERNAME = load_variable(name="ADMIN_USERNAME")
+
+# slack
+SLACK_WEBHOOK_URL = load_variable(name="SLACK_WEBHOOK_URL")
+
 
