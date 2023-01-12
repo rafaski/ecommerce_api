@@ -6,7 +6,7 @@ from fastapi.security import (
 from typing import NoReturn
 import secrets
 
-from ecommerce_api.errors import Unauthorized
+from ecommerce_api.errors import Unauthorized, BadRequest
 from ecommerce_api.dependencies.mongodb_connection import get_user
 from ecommerce_api.auth.jwt_handler import decode_jwt
 from ecommerce_api.settings import ADMIN_USERNAME, ADMIN_SECRET_KEY
@@ -14,6 +14,13 @@ from ecommerce_api.settings import ADMIN_USERNAME, ADMIN_SECRET_KEY
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 security = HTTPBasic()
+
+
+async def verify_user_exists(email: str) -> bool:
+    user = await get_user(email=email)
+    if user:
+        raise BadRequest(details="Email already registered")
+    return True
 
 
 async def authenticate_user(email: str, password: str) -> NoReturn | bool:
