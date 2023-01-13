@@ -1,11 +1,14 @@
 fastapi
 uvicorn
-redis-om
+redis
+sqlalchemy
 python-dotenv
 pyjwt
 pydantic[email]
-motor
-passlib[bcrypt]
+passlib[argon2]
 python-multipart
 pika
 httpx
+celery
+flower
+alembic

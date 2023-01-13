@@ -13,28 +13,31 @@ and build a real-world application from scratch.
 
 Main features:
 - Built with `FastAPI`
-- Inventory stored in `redis` with async `aredis_om`
-- User data in async `mongo db` with `motor`
-- User authentication with `oauth2` and JSON web tokens
+- async data storage in `SQLite` database with `SQLAlchemy`
+- Database migration and versioning with `Alembic`
+- User authentication with `oauth2` and JSON web tokens JWTs
 - Admin endpoints protected with HTTP basic authentication
-- Data validation with `HashModel`
-- Password hashing with `bcrypt`
+- Data validation with `Pydantic` models
+- Password hashing with `CryptContext`
 - custom error handling
+- Order notification with `Celery` task queuing 
+- `RabbitMQ` and `Redis` as the brokers
 - Slack notification of new orders with async `httpx`
+- 
 
 ### E-commerce API
 E-commerce API allows you to:
 
 - as a user: signup and login to use services
-- as a user: make an authorized order
+- as a user: search for products, add products to cart, make order
 - as admin: perform all basic operations such as create, get, update and delete on:
   - product inventory
   - orders
   - users
 
 ### Authentication
-As a user you will need signup. To access `/orders` endpoints you will need to login with `Oauth2` and access token.
-To access `/admin` endpoints you'll need admin credentials. You can pass them via `HTTPBasicAuth`.
+As a user you will need signup. To access user related endpoints you will need to login with `Oauth2` and access token.
+To access endpoints dedicated for `admin` you'll need admin credentials. You can pass them via `HTTPBasicAuth`.
 
 ### Dependencies
 Dependency management is handled using `requirements.txt` file. 
@@ -52,31 +55,36 @@ Dependency management is handled using `requirements.txt` file.
 
 ## Documentation
 Once the application is up and running, you can access FastAPI automatic docs 
-at `/docs` endpoint.
+at index page.
 
 ### Admin endpoints
 
 | Method | Endpoint               | Description             |
 |--------|------------------------|-------------------------|
+| GET    | /users/all             | Get all users           |
+| GET    | /users/{email}         | Get user info           |
+| DELETE | /users/{email}         | Delete user             |
 | POST   | /products/new          | Create new product      |
 | PUT    | /products/{product_id} | Update existing product |
 | DELETE | /products/{product_id} | Delete product          |
 | GET    | /orders/all            | Get all orders          |
 | GET    | /orders/{order_id}     | Get an order            |
-| GET    | /users/all             | Get all users           |
-| GET    | /users/{email}         | Get user info           |
-| DELETE | /users/{email}         | Delete user             |
 
 ### User endpoints
 
-| Method | Endpoint               | Description                 |
-|--------|------------------------|-----------------------------|
-| GET    | /products/all          | Get all products            |
-| GET    | /products/{product_id} | Get a product               |
-| GET    | /products/{category}   | Search products by category |
-| GET    | /products/{name}       | Search products by name     |
-| GET    | /orders/{product_id}   | Get order                   |
-| POST   | /orders/new            | Create order                |
+| Method | Endpoint               | Description                       |
+|--------|------------------------|-----------------------------------|
+| POST   | /signup                | User sign up                      |
+| POST   | /login                 | User login                        |
+| GET    | /products/all          | Get all products                  |
+| GET    | /products/{product_id} | Get a product                     |
+| GET    | /products/{category}   | Search products by category       |
+| GET    | /cart/add              | Add product to cart               |
+| GET    | /cart/                 | Returns all items in user's  cart |
+| DELETE | /cart/{cart_item_id}   | Removes item from cart            |
+| GET    | /products/{name}       | Search products by name           |
+| GET    | /orders/{product_id}   | Get order                         |
+| POST   | /orders/new            | Create order                      |
 
 
 ## Status codes

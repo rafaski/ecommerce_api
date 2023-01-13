@@ -1,25 +1,23 @@
 from passlib.hash import bcrypt
 from fastapi import Depends
 from fastapi.security import (
-    OAuth2PasswordBearer, HTTPBasic, HTTPBasicCredentials
+    HTTPBasic, HTTPBasicCredentials
 )
 from typing import NoReturn
 import secrets
 
 from ecommerce_api.errors import Unauthorized, BadRequest
 from ecommerce_api.dependencies.mongodb_connection import get_user
-from ecommerce_api.auth.jwt_handler import decode_jwt
 from ecommerce_api.settings import ADMIN_USERNAME, ADMIN_SECRET_KEY
+from ecommerce_api.sql.operations import get_user_by_email
 
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 security = HTTPBasic()
 
 
 async def verify_user_exists(email: str) -> bool:
-    user = await get_user(email=email)
+    user = await get_user_by_email(email=email)
     if user:
-        raise BadRequest(details="Email already registered")
+        raise BadRequest(details="Email already exists")
     return True
 
 
@@ -35,21 +33,7 @@ async def authenticate_user(email: str, password: str) -> NoReturn | bool:
     return True
 
 
-async def get_current_user(
-        token: str = Depends(oauth2_scheme)
-) -> NoReturn | bool:
-    """
-    Gets current user
-    """
-    payload = decode_jwt(token=token)
-    payload = dict(payload)
-    user = await get_user(email=payload.get("email"))
-    if not user:
-        raise Unauthorized(details="Invalid user")
-    return True
-
-
-def authenticate_admin(
+def admin_access(
         credentials: HTTPBasicCredentials = Depends(security)
 ) -> bool:
     """

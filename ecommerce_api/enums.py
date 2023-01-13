@@ -5,7 +5,9 @@ class ProductCategory(str, Enum):
     """
     Enums for product category
     """
+    PHONES = "phones"
     LAPTOPS = "laptops"
+    TABLETS = "tablets"
     ACCESSORIES = "accessories"
 
 

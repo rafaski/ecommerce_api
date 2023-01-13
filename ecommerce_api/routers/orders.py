@@ -1,36 +1,51 @@
 from fastapi import Request, APIRouter, Depends
 
-from ecommerce_api.schemas import Order, Product,Output
-from ecommerce_api.errors import BadRequest
-from ecommerce_api.auth.auth import get_current_user
-from ecommerce_api.dependencies.slack_notifications import post_to_slack
+from ecommerce_api.schemas import Output, User, Login
+from ecommerce_api.dependencies.slack_connection import post_to_slack
+from ecommerce_api.sql.operations import (
+    make_order, get_all_user_orders, get_all_orders
+)
+from ecommerce_api.auth.jwt_handler import get_current_user
+from ecommerce_api.auth.validation import admin_access
 
-router = APIRouter(tags=["orders"], dependencies=[Depends(get_current_user)])
+router = APIRouter(tags=["orders"])
 
 
-@router.get("/orders/{product_id}", response_model=Output)
-def get_order(request: Request, product_id: str):
+@router.get("/orders/all", response_model=Output)
+async def get_order(
+    request: Request,
+    email: str,
+    current_user: User = Depends(get_current_user)
+):
     """
-    Returns order based on order primary key
+    Returns all placed orders by user
     """
-    order = Order.get(pk=product_id)
-    return Output(success=True, results=order)
+    result = await get_all_user_orders(email=email)
+    return Output(success=True, results=result)
 
 
 @router.post("/orders/new", response_model=Output)
-async def create_order(request: Request, order: Order):
+async def create_order(
+    request: Request,
+    email: str,
+    current_user: User = Depends(get_current_user)
+):
     """
-    Create order. Pass product primary key and order quantity in request body.
-    Requires signed and validated JWT.
+    Place an order
     """
-    product = await Product.get(order.product_id)
-    if not product:
-        raise BadRequest(details="Product not found")
-    product.quantity -= order.quantity
-    await product.save()
-    await order.save()
-    await post_to_slack(order=order)
-    return Output(success=True, results=order)
+    result = await make_order(email=email)
+    await post_to_slack(order=result)
+    return Output(success=True, results=result)
+
+
+@router.get("/orders/all", response_model=Output)
+async def get_all(request: Request, admin: Login = Depends(admin_access)):
+    """
+    Get all orders
+    """
+    result = await get_all_orders()
+    return Output(success=True, results=result)
+
 
 
 

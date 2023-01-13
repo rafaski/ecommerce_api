@@ -1,32 +1,35 @@
 from fastapi import FastAPI
 
-from ecommerce_api.routers.root import router as root_router
-from ecommerce_api.routers.admin import router as admin_router
-from ecommerce_api.routers.login import router as users_router
+from ecommerce_api.routers.users import router as users_router
+from ecommerce_api.routers.login import router as login_router
 from ecommerce_api.routers.products import router as products_router
+from ecommerce_api.routers.cart import router as cart_router
 from ecommerce_api.routers.orders import router as orders_router
+
 from ecommerce_api.dependencies.redis_connection import redis_cache
 
 description = """
 E-commerce API allows you to:
 
 * as user: signup and login to use services
-* as user: make an authorized order
+* as user: search for products, add products to cart, make order
 * as admin: manage product inventory (create, update, delete), orders and users
 
-To access /admin endpoints you'll need admin credentials
-To access /orders endpoints signup to receive access token.
+Endpoints accessible for users require registration to receive access token.
+Admin related endpoints require admin credentials.
 """
 
 app = FastAPI(
     title="E-commerce API",
+    docs_url="/",
     description=description
 )
 
-app.include_router(root_router)
-app.include_router(admin_router)
+
+app.include_router(login_router)
 app.include_router(users_router)
 app.include_router(products_router)
+app.include_router(cart_router)
 app.include_router(orders_router)
 
 

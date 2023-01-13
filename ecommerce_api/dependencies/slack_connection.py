@@ -6,7 +6,7 @@ from ecommerce_api.schemas import Order
 from ecommerce_api.errors import BadRequest
 
 
-def post_to_slack(order: Order) -> NoReturn:
+async def post_to_slack(order: Order) -> NoReturn:
     """
     Send notification to Slack channel when new order is placed
     """
