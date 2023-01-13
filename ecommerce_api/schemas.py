@@ -3,7 +3,7 @@ from typing import Optional, Any, List
 from datetime import datetime
 from uuid import uuid4
 
-from ecommerce_api.enums import ProductCategory
+from ecommerce_api.enums import ProductCategory, UserType
 
 
 class Output(BaseModel):
@@ -22,6 +22,10 @@ class User(BaseModel):
     name: str
     email: EmailStr
     password: str
+
+    @property
+    def type(self) -> UserType:
+        return UserType.CUSTOMER
 
     class Config:
         """
@@ -114,11 +118,12 @@ class Token(BaseModel):
     token_type: str
 
 
-class TokenData(BaseModel):
+class JWTData(BaseModel):
     """
     Token schema that accepts user email
     """
     email: Optional[str]
+    user_type: UserType
 
 
 

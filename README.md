@@ -23,7 +23,6 @@ Main features:
 - Order notification with `Celery` task queuing 
 - `RabbitMQ` and `Redis` as the brokers
 - Slack notification of new orders with async `httpx`
-- 
 
 ### E-commerce API
 E-commerce API allows you to:

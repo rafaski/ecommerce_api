@@ -5,8 +5,8 @@ from sqlalchemy import (
 )
 
 from ecommerce_api.sql.database import Base
-from ecommerce_api.auth.hashing import hashing_password, verify_password
-from ecommerce_api.enums import OrderStatus
+from ecommerce_api.auth.hashing import hash_password, verify_password
+from ecommerce_api.enums import OrderStatus, UserType
 
 
 class User(Base):
@@ -18,13 +18,14 @@ class User(Base):
     name = Column(String)
     email = Column(String, unique=True, index=True, primary_key=True)
     password = Column(String)
+    type = Column(String, default=UserType.CUSTOMER)
     order = relationship("Order", back_populates="user_info")
     cart = relationship("Cart", back_populates="user_cart")
 
     def __init__(self, name, email, password, *args, **kwargs):
         self.name = name
         self.email = email
-        self.password = hashing_password(password)
+        self.password = hash_password(password)
 
     def check_password(self, password) -> bool:
         verified = verify_password(

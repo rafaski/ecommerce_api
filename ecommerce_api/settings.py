@@ -43,7 +43,6 @@ DATABASE_URL = load_variable(
 # JWT
 ALGORITHM = load_variable(name="ALGORITHM")
 JWT_SECRET_KEY = load_variable(name="JWT_SECRET_KEY")
-ACCESS_TOKEN_TTL_MINUTES = load_variable(name="ACCESS_TOKEN_TTL_MINUTES")
 
 # admin
 ADMIN_SECRET_KEY = load_variable(name="ADMIN_SECRET_KEY")

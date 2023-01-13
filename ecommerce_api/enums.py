@@ -1,6 +1,14 @@
 from enum import Enum
 
 
+class UserType(str, Enum):
+    """
+    User type
+    """
+    ADMIN = "admin"
+    CUSTOMER = "customer"
+
+
 class ProductCategory(str, Enum):
     """
     Enums for product category

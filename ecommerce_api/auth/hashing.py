@@ -11,7 +11,7 @@ def verify_password(password: str, hashed_password: str) -> bool:
     return is_valid
 
 
-def hashing_password(password: str) -> str:
+def hash_password(password: str) -> str:
     """
     Hashing user password
     """
