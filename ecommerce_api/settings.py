@@ -12,14 +12,6 @@ def load_variable(name: str, default: Any = None) -> str:
     return variable
 
 
-# Dependencies - mongodb
-MONGODB_HOST = load_variable(name="MONGODB_HOST", default="127.0.0.1")
-MONGODB_PORT = load_variable(name="MONGODB_PORT", default="27017")
-MONGODB_URL = load_variable(
-    name="MONGODB_URL",
-    default=f"mongodb://{MONGODB_HOST}:{MONGODB_PORT}"
-)
-
 # Dependencies - redis
 REDIS_HOST = load_variable(name="REDIS_HOST", default="127.0.0.1")
 REDIS_DATA_PORT = load_variable(name="REDIS_PORT", default="6379")
@@ -43,10 +35,6 @@ DATABASE_URL = load_variable(
 # JWT
 ALGORITHM = load_variable(name="ALGORITHM")
 JWT_SECRET_KEY = load_variable(name="JWT_SECRET_KEY")
-
-# admin
-ADMIN_SECRET_KEY = load_variable(name="ADMIN_SECRET_KEY")
-ADMIN_USERNAME = load_variable(name="ADMIN_USERNAME")
 
 # slack
 SLACK_WEBHOOK_URL = load_variable(name="SLACK_WEBHOOK_URL")

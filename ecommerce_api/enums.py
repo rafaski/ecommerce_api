@@ -24,6 +24,8 @@ class OrderStatus(str, Enum):
     Enums for customer order status
     """
 
+    IN_PROGRESS = "in_progress"
+    SUBMITTED = "submitted"
     PENDING = "pending"
     COMPLETED = "completed"
     REFUNDED = "refunded"

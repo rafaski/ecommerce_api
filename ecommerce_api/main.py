@@ -3,7 +3,6 @@ from fastapi import FastAPI
 from ecommerce_api.routers.users import router as users_router
 from ecommerce_api.routers.login import router as login_router
 from ecommerce_api.routers.products import router as products_router
-from ecommerce_api.routers.cart import router as cart_router
 from ecommerce_api.routers.orders import router as orders_router
 
 from ecommerce_api.dependencies.redis_connection import redis_cache
@@ -29,8 +28,10 @@ app = FastAPI(
 app.include_router(login_router)
 app.include_router(users_router)
 app.include_router(products_router)
-app.include_router(cart_router)
 app.include_router(orders_router)
+
+
+# todo: error handling
 
 
 @app.on_event("startup")

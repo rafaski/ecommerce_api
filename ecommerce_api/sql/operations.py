@@ -5,238 +5,163 @@ from ecommerce_api.sql import models
 from ecommerce_api.schemas import User, Product
 from ecommerce_api.sql.database import database_operation
 from ecommerce_api.errors import NotFound
+from ecommerce_api.enums import OrderStatus
 
 
-# models.User operations
-@database_operation
-def get_user_by_email(db: Session, email: str) -> Optional[models.User]:
-    user = db.query(models.User).filter(
-        models.User.email == email
-    ).first()
-    return user
+class UserOperations:
 
-
-@database_operation
-def get_users(db: Session) -> Optional[List[models.User]]:
-    all_users = db.query(models.User).all()
-    return all_users
-
-
-@database_operation
-def create_user(db: Session, user: User) -> models.User:
-    new_user = models.User(
-        name=user.name,
-        email=user.email,
-        password=user.password,
-        type=user.type
-    )
-    db.add(new_user)
-    db.commit()
-    return new_user
-
-
-@database_operation
-def remove_user(db: Session, email: str) -> None:
-    db.query(models.User).filter(models.User.email == email).delete()
-    db.commit()
-
-
-# models.Product operations
-@database_operation
-def get_all_products(db: Session) -> Optional[List[models.Product]]:
-    all_products = db.query(models.Product).all()
-    return all_products
-
-
-@database_operation
-def get_product_by_id(
-        db: Session,
-        product_id: str
-) -> Optional[models.Product]:
-    product = db.query(models.Product).filter(
-        models.Product.id == product_id
-    ).first()
-    return product
-
-
-@database_operation
-def get_products_by_category(
-        db: Session,
-        category: str
-) -> Optional[List[models.Product]]:
-    matching_products = db.query(models.Product).filter(
-        models.Product.category == category
-    ).all()
-    return matching_products
-
-
-@database_operation
-def create_product(db: Session, product: Product) -> models.Product:
-    new_product = models.Product(
-        id=product.product_id,
-        name=product.name,
-        quantity=product.quantity,
-        category=product.category,
-        description=product.description,
-        price=product.price,
-        date_posted=product.created_date
-    )
-    db.add(new_product)
-    db.commit()
-    return new_product
-
-
-@database_operation
-def update_product(
-        db: Session,
-        product_id: str,
-        product: Product
-) -> models.Product:
-    updated_product = models.Product(
-        id=product.product_id,
-        name=product.name,
-        quantity=product.quantity,
-        category=product.category,
-        description=product.description,
-        price=product.price,
-        date_posted=product.created_date
-    )
-    db.query(models.Product).filter(
-        models.Product.id == product_id
-    ).update(**updated_product.dict())
-    db.commit()
-    return updated_product
-
-
-@database_operation
-def remove_product(db: Session, product_id: str) -> None:
-    db.query(models.Product).filter(
-        models.Product.id == product_id
-    ).delete()
-    db.commit()
-
-
-# models.Cart operations
-@database_operation
-def add_to_cart(db: Session, email: str, product_id: str) -> None:
-    product_info = db.query(models.Product).get(product_id)
-    if not product_info:
-        raise NotFound(details="Product not found")
-    if product_info.quantity <= 0:
-        raise NotFound(details="Product out of stock")
-    user_info = db.query(models.User).filter(
-        models.User.email == email
-    ).first()
-    cart_info = db.query(models.Cart).filter(
-        models.Cart.user_email == user_info.email
-    ).first()
-    if not cart_info:
-        new_cart = models.Cart(user_email=user_info.email)
-        db.add(new_cart)
+    @database_operation
+    def create(self, db: Session, user: User) -> models.User:
+        new_user = models.User(
+            email=user.email,
+            password=user.password,
+            type=user.type
+        )
+        db.add(new_user)
         db.commit()
-        add_items_to_cart(
-            cart_id=new_cart.id,
-            product_id=product_info.id,
-            db=db
+        return new_user
+
+    @database_operation
+    def get_by_email(self, db: Session, email: str) -> Optional[models.User]:
+        user = db.query(models.User).filter(
+            models.User.email == email
+        ).first()
+        return user
+
+    @database_operation
+    def get_all(self, db: Session) -> Optional[List[models.User]]:
+        all_users = db.query(models.User).all()
+        return all_users
+
+    @database_operation
+    def delete(self, db: Session, email: str) -> None:
+        db.query(models.User).filter(models.User.email == email).delete()
+        db.commit()
+
+
+class ProductOperations:
+
+    @database_operation
+    def create(self, db: Session, product: Product) -> models.Product:
+        db.add(**product.dict())
+        db.commit()
+        return product
+
+    @database_operation
+    def get_all(self, db: Session) -> Optional[List[models.Product]]:
+        all_products = db.query(models.Product).all()
+        return all_products
+
+    @database_operation
+    def get_by_id(
+            self,
+            db: Session,
+            product_id: str
+    ) -> Optional[models.Product]:
+        product = db.query(models.Product).filter(
+            models.Product.id == product_id
+        ).first()
+        return product
+
+    @database_operation
+    def get_by_category(
+            self,
+            db: Session,
+            category: str
+    ) -> Optional[List[models.Product]]:
+        matching_products = db.query(models.Product).filter(
+            models.Product.category == category
+        ).all()
+        return matching_products
+
+    @database_operation
+    def update(
+            self,
+            db: Session,
+            product_id: str,
+            product: Product
+    ) -> models.Product:
+        db.query(models.Product).filter(
+            models.Product.id == product_id
+        ).update(**product.dict())
+        db.commit()
+        return product
+
+    @database_operation
+    def remove(self, db: Session, product_id: str) -> None:
+        db.query(models.Product).filter(
+            models.Product.id == product_id
+        ).delete()
+        db.commit()
+
+
+class OrderOperations:
+
+    @database_operation
+    def add_to_order(self, db: Session, email: str, product_id: str) -> None:
+        product = db.query(models.Product).get(product_id)
+        if not product:
+            raise NotFound(details="Product not found")
+        if product.quantity <= 0:
+            raise NotFound(details="Product out of stock")
+        order = db.query(models.Order).filter(
+            models.Order.user_email == email
+        ).first()
+        if not order:
+            new_order = models.Order(user_email=email)
+            current_quantity = product.first().quantity - 1
+            product.update({"quantity": current_quantity})
+            db.add(new_order)
+            db.commit()
+        else:
+            current_quantity = product.first().quantity - 1
+            product.update({"quantity": current_quantity})
+            db.commit()
+
+    @database_operation
+    def get_all_items(self, db: Session, email: str) -> models.Order:
+        order = db.query(models.Order).filter(
+            models.Order.user_email == email
+        ).first()
+        return order
+
+    @database_operation
+    def remove_item(self, db: Session, email: str, product_id: str) -> None:
+        order = db.query(models.Order).filter(
+            models.User.email == email
+        ).first()
+        db.query(models.Order).filter(
+            models.Order.products.id == product_id
+        ).delete()
+        db.commit()
+
+    @database_operation
+    def submit(self, db: Session, email: str) -> models.Order:
+        order = db.query(models.Order).filter(
+            models.User.email == email
+        ).first()
+
+        if not order.count():
+            raise NotFound(details="No items in cart")
+
+        total_price: float = 0.0
+        for item in order.products:
+            total_price += item.price
+
+        new_order = models.Order(
+            total_price=total_price,
+            user_email=email,
+            status=OrderStatus.SUBMITTED
         )
-    else:
-        add_items_to_cart(
-            cart_id=cart_info.id,
-            product_id=product_info.id,
-            db=db
-        )
+        db.add(new_order)
+        db.commit()
+        return new_order
 
-
-@database_operation
-def add_items_to_cart(db: Session, cart_id: str, product_id: str) -> None:
-    cart_items = models.CartItems(cart_id=cart_id, product_id=product_id)
-    db.add(cart_items)
-    db.commit()
-
-
-@database_operation
-def get_all_items_in_cart(db: Session, email: str) -> models.Cart:
-    user_info = db.query(models.User).filter(
-        models.User.email == email
-    ).first()
-    cart = db.query(models.Cart).filter(
-        models.Cart.user_email == user_info.email
-    ).first()
-    return cart
-
-
-@database_operation
-def remove_cart_item(db: Session, email: str, cart_item_id: str) -> None:
-    user_info = db.query(models.User).filter(
-        models.User.email == email
-    ).first()
-    cart_id = db.query(models.Cart).filter(
-        models.User.email == user_info.email
-    ).first()
-    db.query(models.CartItems).filter(
-        models.CartItems.id == cart_item_id,
-        models.CartItems.cart_id == cart_id.id
-    ).delete()
-    db.commit()
-
-
-# models.Order operations
-@database_operation
-def make_order(db: Session, email: str) -> models.Order:
-    user_info = db.query(models.User).filter(
-        models.User.email == email
-    ).first()
-    cart = db.query(models.Cart).filter(
-        models.Cart.user_email == user_info.email
-    ).first()
-
-    cart_items_objects = db.query(models.CartItems).filter(
-        models.Cart.id == cart.id
-    )
-    if not cart_items_objects.count():
-        raise NotFound(details="No items in cart")
-
-    total_amount: float = 0.0
-    for item in cart_items_objects:
-        total_amount += item.products.price
-
-    new_order = models.Order(
-        order_total=total_amount,
-        customer_email=user_info.email
-    )
-    db.add(new_order)
-    db.commit()
-
-    order_details_objects = []
-    for item in cart_items_objects:
-        new_order_details = models.OrderDetails(
-            order_id=new_order.id,
-            product_id=item.products.id
-        )
-        order_details_objects.append(new_order_details)
-    db.bulk_save_objects(order_details_objects)
-    db.commit()
-
-    db.query(models.CartItems).filter(
-        models.CartItems.cart_id == cart.id
-    ).delete()
-    db.commit()
-
-    return new_order
-
-
-@database_operation
-def get_all_user_orders(db: Session, email: str) -> List[models.Order]:
-    user_info = db.query(models.User).filter(
-        models.User.email == email
-    ).first()
-    orders = db.query(models.Order).filter(
-        models.Order.customer_email == user_info.email
-    ).all()
-    return orders
-
-
-@database_operation
-def get_all_orders(db: Session) -> List[models.Order]:
-    orders = db.query(models.Order).all()
-    return orders
+    @database_operation
+    def get_orders(self, db: Session, email: str = None) -> List[models.Order]:
+        if not email:
+            return db.query(models.Order).all()
+        orders = db.query(models.Order).filter(
+            models.Order.customer_email == email
+        ).all()
+        return orders

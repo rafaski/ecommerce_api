@@ -19,9 +19,9 @@ class User(BaseModel):
     """
     User schema
     """
-    name: str
     email: EmailStr
     password: str
+    orders: List[dict]
 
     @property
     def type(self) -> UserType:
@@ -39,48 +39,12 @@ class Product(BaseModel):
     """
     Product schema
     """
-    product_id: str = str(uuid4())[:8]
+    id: str = str(uuid4())[:8]
     name: str
     quantity: int = Field(ge=0)
     category: ProductCategory
     description: Optional[str] = None
     price: float
-    created_date: datetime = datetime.today()
-
-    class Config:
-        orm_true = True
-
-
-class ShowCartItems(BaseModel):
-    """
-    ShowCartItems schema
-    """
-    cart_id: str = str(uuid4())[:8]
-    products: Product
-    created_date: datetime = datetime.today()
-
-    class Config:
-        orm_true = True
-
-
-class ShowCart(BaseModel):
-    """
-    ShowCart schema
-    """
-    cart_id: str = str(uuid4())[:8]
-    cart_items: List[ShowCartItems] = []
-
-    class Config:
-        orm_true = True
-
-
-class OrderDetails(BaseModel):
-    """
-    Order Details schema
-    """
-    id: str = str(uuid4())[:8]
-    order_id: str = str(uuid4())[:8]
-    product_order_details: Product
 
     class Config:
         orm_true = True
@@ -90,13 +54,14 @@ class Order(BaseModel):
     """
     Order schema
     """
-    id: Optional[str] = str(uuid4())[:8]
-    order_date: datetime
-    order_total: float
-    order_status: str
-    customer_email: str
-    order_details: List[OrderDetails] = []
-    quantity: int = Field(ge=1)
+    id: str = str(uuid4())[:8]
+    created_date: datetime
+    total_price: float
+    user_email: str
+    status: str
+    product_id: str
+    products: List[Product] = []
+    total_items: int = Field(ge=1)
 
     class Config:
         orm_true = True
@@ -108,14 +73,6 @@ class Login(BaseModel):
     """
     email: str
     password: str
-
-
-class Token(BaseModel):
-    """
-    Access token schema
-    """
-    access_token: str
-    token_type: str
 
 
 class JWTData(BaseModel):
