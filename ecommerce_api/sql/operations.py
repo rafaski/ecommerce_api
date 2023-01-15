@@ -6,20 +6,19 @@ from ecommerce_api.schemas import User, Product
 from ecommerce_api.sql.database import database_operation
 from ecommerce_api.errors import NotFound
 from ecommerce_api.enums import OrderStatus
+from ecommerce_api.auth.password import to_hash
 
 
 class UserOperations:
+    """
+    Database operations on User class (SQL table)
+    """
 
     @database_operation
-    def create(self, db: Session, user: User) -> models.User:
-        new_user = models.User(
-            email=user.email,
-            password=user.password,
-            type=user.type
-        )
-        db.add(new_user)
+    def create(self, db: Session, user: User) -> None:
+        user.password = to_hash(user.password)
+        db.add(**user.dict())
         db.commit()
-        return new_user
 
     @database_operation
     def get_by_email(self, db: Session, email: str) -> Optional[models.User]:
@@ -40,12 +39,14 @@ class UserOperations:
 
 
 class ProductOperations:
+    """
+    Database operations on Product class (SQL table)
+    """
 
     @database_operation
-    def create(self, db: Session, product: Product) -> models.Product:
+    def create(self, db: Session, product: Product) -> None:
         db.add(**product.dict())
         db.commit()
-        return product
 
     @database_operation
     def get_all(self, db: Session) -> Optional[List[models.Product]]:
@@ -54,9 +55,9 @@ class ProductOperations:
 
     @database_operation
     def get_by_id(
-            self,
-            db: Session,
-            product_id: str
+        self,
+        db: Session,
+        product_id: str
     ) -> Optional[models.Product]:
         product = db.query(models.Product).filter(
             models.Product.id == product_id
@@ -65,9 +66,9 @@ class ProductOperations:
 
     @database_operation
     def get_by_category(
-            self,
-            db: Session,
-            category: str
+        self,
+        db: Session,
+        category: str
     ) -> Optional[List[models.Product]]:
         matching_products = db.query(models.Product).filter(
             models.Product.category == category
@@ -76,16 +77,16 @@ class ProductOperations:
 
     @database_operation
     def update(
-            self,
-            db: Session,
-            product_id: str,
-            product: Product
+        self,
+        db: Session,
+        product_id: str,
+        product: Product
     ) -> models.Product:
-        db.query(models.Product).filter(
+        updated_product = db.query(models.Product).filter(
             models.Product.id == product_id
         ).update(**product.dict())
         db.commit()
-        return product
+        return updated_product
 
     @database_operation
     def remove(self, db: Session, product_id: str) -> None:
@@ -96,72 +97,75 @@ class ProductOperations:
 
 
 class OrderOperations:
+    """
+    Database operations on Order class (SQL table)
+    """
 
     @database_operation
-    def add_to_order(self, db: Session, email: str, product_id: str) -> None:
-        product = db.query(models.Product).get(product_id)
-        if not product:
-            raise NotFound(details="Product not found")
-        if product.quantity <= 0:
-            raise NotFound(details="Product out of stock")
+    def add(
+        self,
+        db: Session,
+        email: str,
+        order_id: str,
+        product_id: str
+    ) -> None:
+        product = db.query(models.Product).get(product_id).first()
+        product.update({"quantity": product.quantity - 1})
+
         order = db.query(models.Order).filter(
-            models.Order.user_email == email
+            models.Order.id == order_id
         ).first()
         if not order:
-            new_order = models.Order(user_email=email)
-            current_quantity = product.first().quantity - 1
-            product.update({"quantity": current_quantity})
-            db.add(new_order)
-            db.commit()
+            order = models.Order(user_email=email, products=product_id)
+            db.add(order)
         else:
-            current_quantity = product.first().quantity - 1
-            product.update({"quantity": current_quantity})
-            db.commit()
-
-    @database_operation
-    def get_all_items(self, db: Session, email: str) -> models.Order:
-        order = db.query(models.Order).filter(
-            models.Order.user_email == email
-        ).first()
-        return order
-
-    @database_operation
-    def remove_item(self, db: Session, email: str, product_id: str) -> None:
-        order = db.query(models.Order).filter(
-            models.User.email == email
-        ).first()
-        db.query(models.Order).filter(
-            models.Order.products.id == product_id
-        ).delete()
-        db.commit()
-
-    @database_operation
-    def submit(self, db: Session, email: str) -> models.Order:
-        order = db.query(models.Order).filter(
-            models.User.email == email
-        ).first()
-
-        if not order.count():
-            raise NotFound(details="No items in cart")
-
+            order.products.append(product_id)
         total_price: float = 0.0
         for item in order.products:
             total_price += item.price
-
-        new_order = models.Order(
-            total_price=total_price,
-            user_email=email,
-            status=OrderStatus.SUBMITTED
-        )
-        db.add(new_order)
+        order.total_price = total_price
         db.commit()
-        return new_order
 
     @database_operation
-    def get_orders(self, db: Session, email: str = None) -> List[models.Order]:
+    def get(self, db: Session, order_id: str = None) -> models.Order:
+        order = db.query(models.Order).filter(
+            models.Order.id == order_id
+        ).all()
+        return order
+
+    @database_operation
+    def get_all(self, db: Session, email: str = None) -> List[models.Order]:
         if not email:
             return db.query(models.Order).all()
         orders = db.query(models.Order).filter(
             models.Order.customer_email == email
         ).all()
         return orders
+
+    @database_operation
+    def remove(self, db: Session, order_id: str, product_id: str) -> None:
+        order = db.query(models.Order).filter(
+            models.Order.id == order_id
+        ).first()
+        if product_id not in order.products:
+            return
+        product = db.query(models.Product).get(product_id).first()
+        product.update({"quantity": product.quantity + 1})
+        order.products.remove(product_id)
+        db.commit()
+
+    @database_operation
+    def submit(self, db: Session, order_id: str) -> models.Order:
+        order = db.query(models.Order).filter(
+            models.Order.id == order_id
+        ).first()
+
+        if not order.products:
+            raise NotFound(details="No items in cart")
+
+        order.status = OrderStatus.SUBMITTED
+        db.add(order)
+        db.commit()
+        return order
+
+

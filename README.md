@@ -13,13 +13,12 @@ and build a real-world application from scratch.
 
 Main features:
 - Built with `FastAPI`
-- async data storage in `SQLite` database with `SQLAlchemy`
+- Data storage in `SQLite` database with `SQLAlchemy`
 - Database migration and versioning with `Alembic`
 - User authentication with `oauth2` and JSON web tokens JWTs
-- Admin endpoints protected with HTTP basic authentication
 - Data validation with `Pydantic` models
 - Password hashing with `CryptContext`
-- custom error handling
+- Custom error handling
 - Order notification with `Celery` task queuing 
 - `RabbitMQ` and `Redis` as the brokers
 - Slack notification of new orders with async `httpx`
@@ -66,24 +65,22 @@ at index page.
 | POST   | /products/new          | Create new product      |
 | PUT    | /products/{product_id} | Update existing product |
 | DELETE | /products/{product_id} | Delete product          |
-| GET    | /orders/all            | Get all orders          |
-| GET    | /orders/{order_id}     | Get an order            |
+| GET    | /order/all             | Get all orders          |
+| GET    | /order/{order_id}      | Get an order            |
 
 ### User endpoints
 
-| Method | Endpoint               | Description                       |
-|--------|------------------------|-----------------------------------|
-| POST   | /signup                | User sign up                      |
-| POST   | /login                 | User login                        |
-| GET    | /products/all          | Get all products                  |
-| GET    | /products/{product_id} | Get a product                     |
-| GET    | /products/{category}   | Search products by category       |
-| GET    | /cart/add              | Add product to cart               |
-| GET    | /cart/                 | Returns all items in user's  cart |
-| DELETE | /cart/{cart_item_id}   | Removes item from cart            |
-| GET    | /products/{name}       | Search products by name           |
-| GET    | /orders/{product_id}   | Get order                         |
-| POST   | /orders/new            | Create order                      |
+| Method | Endpoint                   | Description                       |
+|--------|----------------------------|-----------------------------------|
+| POST   | /signup                    | User sign up                      |
+| POST   | /login                     | User login                        |
+| GET    | /products/all              | Get all products                  |
+| GET    | /products/{product_id}     | Get a product                     |
+| GET    | /products/{category}       | Search products by category       |
+| GET    | /order/add                 | Add product to cart               |
+| GET    | /order/{email}             | Returns all items in user's  cart |
+| DELETE | /order/remove/{product_id} | Removes item from cart            |
+| POST   | /order/submit              | Submit new order                  |
 
 
 ## Status codes

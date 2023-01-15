@@ -1,12 +1,12 @@
 import httpx
-from typing import NoReturn
+from typing import Any
 
 from ecommerce_api.settings import SLACK_WEBHOOK_URL
 from ecommerce_api.schemas import Order
 from ecommerce_api.errors import BadRequest
 
 
-async def post_to_slack(order: Order) -> NoReturn:
+async def post_to_slack(order: Order) -> Any:
     """
     Send notification to Slack channel when new order is placed
     """

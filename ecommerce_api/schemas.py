@@ -24,7 +24,7 @@ class User(BaseModel):
     orders: List[dict]
 
     @property
-    def type(self) -> UserType:
+    def type(self) -> str:
         return UserType.CUSTOMER
 
     class Config:
@@ -33,6 +33,11 @@ class User(BaseModel):
         path operation, it wouldn't include the relationship data.
         """
         orm_true = True
+
+    # def dict(self, *args, **kwargs):
+    #     data = self.dict(*args, **kwargs)
+    #     data["password"] = to_hash(data["password"])
+    #     return data
 
 
 class Product(BaseModel):

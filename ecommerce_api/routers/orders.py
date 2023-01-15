@@ -2,8 +2,9 @@ from fastapi import Request, APIRouter, Depends
 
 from ecommerce_api.schemas import Output, JWTData
 from ecommerce_api.dependencies.slack_connection import post_to_slack
-from ecommerce_api.sql.operations import OrderOperations
+from ecommerce_api.sql.operations import OrderOperations, ProductOperations
 from ecommerce_api.auth.access import authorize_token, admin_access_only
+from ecommerce_api.errors import NotFound
 
 router = APIRouter(tags=["orders"])
 
@@ -17,7 +18,12 @@ async def add_item(
     """
     Add item to shopping cart
     """
-    OrderOperations.add_to_order(product_id=product_id)
+    product = ProductOperations.get_by_id(product_id=product_id)
+    if not product:
+        raise NotFound(details="Product not found")
+    if product.quantity <= 0:
+        raise NotFound(details="Product out of stock")
+    OrderOperations.add(product_id=product_id)
     return Output(success=True, message="Item added to cart")
 
 
@@ -30,7 +36,7 @@ async def get_all_items(
     """
     Returns all items in user's shopping cart
     """
-    items = OrderOperations.get_all_items(email=email)
+    items = OrderOperations.get_all(email=email)
     return Output(success=True, results=items)
 
 
@@ -44,44 +50,45 @@ async def remove_item(
     """
     Removes item from cart
     """
-    OrderOperations.remove_item(email=email, product_id=product_id)
+    OrderOperations.remove(email=email, product_id=product_id)
     return Output(success=True, message="Item deleted from cart")
 
 
-@router.get("/orders/{email}", response_model=Output)
-async def get_all_per_user(
+@router.post("/order/submit", response_model=Output)
+async def submit_order(
     request: Request,
     email: str,
     data: JWTData = Depends(authorize_token)
 ):
     """
-    Returns all placed orders by user
-    """
-    orders = OrderOperations.get_orders(email=email)
-    return Output(success=True, results=orders)
-
-
-@router.post("/orders/new", response_model=Output)
-async def create_order(
-    request: Request,
-    email: str,
-    data: JWTData = Depends(authorize_token)
-):
-    """
-    Place an order
+    Submit new order
     """
     order = OrderOperations.submit(email=email)
     await post_to_slack(order=order)
     return Output(success=True, results=order)
 
 
-@router.get("/orders/all", response_model=Output)
+@router.get("/order/all", response_model=Output)
 @admin_access_only
 async def get_all(request: Request, data: JWTData = Depends(authorize_token)):
     """
     Get all orders
     """
-    order = OrderOperations.get_orders()
+    order = OrderOperations.get_all()
+    return Output(success=True, results=order)
+
+
+@router.get("/order/{order_id}", response_model=Output)
+@admin_access_only
+async def get_all(
+        request: Request,
+        order_id: str, data:
+        JWTData = Depends(authorize_token)
+):
+    """
+    Get order from order_id
+    """
+    order = OrderOperations.get(order_id=order_id)
     return Output(success=True, results=order)
 
 

@@ -6,9 +6,7 @@ from sqlalchemy import (
 
 from ecommerce_api.sql.database import Base
 from ecommerce_api.enums import OrderStatus, UserType
-
-
-# todo: simplify models and relationships
+from ecommerce_api.auth.password import to_hash
 
 
 class User(Base):
@@ -21,6 +19,9 @@ class User(Base):
     password = Column(String)
     type = Column(String, default=UserType.CUSTOMER)
     orders = relationship("Order", back_populates="user")
+
+    def __init__(self, password: str, **data):
+        self.password = to_hash(password=password)
 
 
 class Product(Base):
@@ -35,6 +36,7 @@ class Product(Base):
     category = Column(String, index=True)
     description = Column(Text)
     price = Column(Float)
+    order_id = Column(String, ForeignKey("order.id", ondelete="CASCADE"))
 
 
 class Order(Base):
@@ -47,7 +49,7 @@ class Order(Base):
     created_date = Column(DateTime, default=datetime.now)
     total_price = Column(Float, default=0.0)
     status = Column(String, default=OrderStatus.IN_PROGRESS)
-    user_email = Column(String, ForeignKey(User.email, ondelete="CASCADE"))
+    user_email = Column(String, ForeignKey("user.email", ondelete="CASCADE"))
     products = relationship("Product", back_populates="order")
     user = relationship("User", back_populates="order")
 

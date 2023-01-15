@@ -54,13 +54,3 @@ class NotFound(ApiException):
 class RedisException(AppException):
     error_type: ErrorTypes = ErrorTypes.REDIS_ERROR
     details: str = "Redis error"
-
-
-class MongoDbError(AppException):
-    error_type: ErrorTypes = ErrorTypes.MONGO_DB_ERROR
-    details: str = "Mongo DB error"
-
-
-class MongoDbNoUser(AppException):
-    error_type: ErrorTypes = ErrorTypes.MONGO_DB_NO_USER
-    details: str = "No user with this email"
