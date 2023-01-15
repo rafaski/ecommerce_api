@@ -50,8 +50,21 @@ async def remove_item(
     """
     Removes item from cart
     """
-    OrderOperations.remove(email=email, product_id=product_id)
+    OrderOperations.remove_item(email=email, product_id=product_id)
     return Output(success=True, message="Item deleted from cart")
+
+
+@router.post("/order/cancel/{order_id}", response_model=Output)
+async def cancel_order(
+    request: Request,
+    order_id: str,
+    data: JWTData = Depends(authorize_token)
+):
+    """
+    Cancel order
+    """
+    OrderOperations.cancel(order_id=order_id)
+    return Output(success=True, message="Order cancelled")
 
 
 @router.post("/order/submit", response_model=Output)

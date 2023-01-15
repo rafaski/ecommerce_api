@@ -98,7 +98,7 @@ class ProductOperations:
 
     @database_operation
     def remove(self, db: Session, product_id: str) -> None:
-        """Delete a product from db"""
+        """Delete product from db"""
         db.query(models.Product).filter(
             models.Product.id == product_id
         ).delete()
@@ -126,18 +126,15 @@ class OrderOperations:
             models.Order.id == order_id
         ).first()
         if not order:
-            order = models.Order(user_email=email, products=product_id)
+            order = models.Order(user_email=email, products=[product_id])
             db.add(order)
         else:
             order.products.append(product_id)
-        total_price: float = 0.0
-        for item in order.products:
-            total_price += item.price
-        order.total_price = total_price
+        order.total_price += product.price
         db.commit()
 
     @database_operation
-    def get(self, db: Session, order_id: str = None) -> models.Order:
+    def get(self, db: Session, order_id: str) -> models.Order:
         """Get order (all items in cart)"""
         order = db.query(models.Order).filter(
             models.Order.id == order_id
@@ -155,7 +152,7 @@ class OrderOperations:
         return orders
 
     @database_operation
-    def remove(self, db: Session, order_id: str, product_id: str) -> None:
+    def remove_item(self, db: Session, order_id: str, product_id: str) -> None:
         """Remove an item from order (cart)"""
         order = db.query(models.Order).filter(
             models.Order.id == order_id
@@ -181,5 +178,18 @@ class OrderOperations:
         db.add(order)
         db.commit()
         return order
+
+    @database_operation
+    def cancel(self, db: Session, order_id: str) -> None:
+        """Cancel (delete) order"""
+        order = db.query(models.Order).filter(
+            models.Order.id == order_id
+        ).first()
+        for product_id in order.products:
+            product = db.query(models.Product).get(product_id).first()
+            product.update({"quantity": product.quantity + 1})
+
+        order.delete()
+        db.commit()
 
 

@@ -80,6 +80,7 @@ at index page.
 | GET    | /order/add                 | Add product to cart               |
 | GET    | /order/{email}             | Returns all items in user's  cart |
 | DELETE | /order/remove/{product_id} | Removes item from cart            |
+| POST   | /order/cancel/{order_id}   | Cancels order                     |
 | POST   | /order/submit              | Submit new order                  |
 
 
