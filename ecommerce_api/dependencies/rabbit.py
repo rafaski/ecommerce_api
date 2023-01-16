@@ -1,6 +1,8 @@
 import pika
 import json
 
+# todo: add RabbitMQ messaging queuing
+
 connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
 channel = connection.channel()
 
