@@ -15,13 +15,13 @@ and build a real-world application from scratch.
 - Built with `FastAPI`
 - Data storage in `SQLite` database with `SQLAlchemy`
 - Database migration and versioning with `Alembic`
-- User authentication with `oauth2` and JSON web tokens JWTs
+- User authentication with `oauth2` and JSON web tokens `JWT`
 - Data validation with `Pydantic` models
 - Password hashing with `CryptContext`
 - Custom error handling
 - Slack notification of new orders with async `httpx`
 #### To be implemented:
-- distributed task queuing with `Celery` and `RabbitMQ`
+- Asynchronous tasks processing with `Celery` and `RabbitMQ`
 
 
 ### E-commerce API

@@ -1,14 +1,13 @@
 fastapi
 uvicorn
-redis
 sqlalchemy
 python-dotenv
 pyjwt
 pydantic[email]
 passlib[argon2]
 python-multipart
-pika
 httpx
 celery
+pika
 flower
 alembic
