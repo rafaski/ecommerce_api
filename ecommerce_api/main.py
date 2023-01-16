@@ -5,6 +5,8 @@ from ecommerce_api.routers.login import router as login_router
 from ecommerce_api.routers.products import router as products_router
 from ecommerce_api.routers.orders import router as orders_router
 
+from ecommerce_api.sql.database import init_db, database
+
 from ecommerce_api.dependencies.redis_connection import redis_cache
 
 description = """
@@ -38,5 +40,9 @@ app.include_router(orders_router)
 async def startup():
     # TODO: add redis caching with fastapi_cache
     # FastAPICache.init(RedisBackend(redis_cache), prefix="fastapi-cache")
-    pass
+    init_db()
 
+
+@app.on_event("shutdown")
+async def shutdown():
+    database.dispose_session()

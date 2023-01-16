@@ -9,7 +9,7 @@ from ecommerce_api.errors import NotFound
 router = APIRouter(tags=["orders"])
 
 
-@router.get("/order/add", response_model=Output)
+@router.get("/order/add/{product_id}", response_model=Output)
 async def add_item(
     request: Request,
     product_id: str,
@@ -23,7 +23,10 @@ async def add_item(
         raise NotFound(details="Product not found")
     if product.quantity <= 0:
         raise NotFound(details="Product out of stock")
-    OrderOperations.add(product_id=product_id)
+    OrderOperations.add(
+        product_id=product_id,
+        email=data.email
+    )
     return Output(success=True, message="Item added to cart")
 
 
@@ -43,14 +46,13 @@ async def get_all_items(
 @router.delete("/order/remove/{product_id}", response_model=Output)
 async def remove_item(
     request: Request,
-    email: str,
     product_id: str,
     data: JWTData = Depends(authorize_token)
 ):
     """
     Removes item from cart
     """
-    OrderOperations.remove_item(email=email, product_id=product_id)
+    OrderOperations.remove_item(email=data.email, product_id=product_id)
     return Output(success=True, message="Item deleted from cart")
 
 
@@ -70,13 +72,12 @@ async def cancel_order(
 @router.post("/order/submit", response_model=Output)
 async def submit_order(
     request: Request,
-    email: str,
     data: JWTData = Depends(authorize_token)
 ):
     """
     Submit new order
     """
-    order = OrderOperations.submit(email=email)
+    order = OrderOperations.submit(email=data.email)
     await post_to_slack(order=order)
     return Output(success=True, results=order)
 

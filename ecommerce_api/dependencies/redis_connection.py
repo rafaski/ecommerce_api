@@ -9,7 +9,6 @@ redis_connection = get_redis_connection(
     decode_responses=True
 )
 
-Migrator().run()
 
 # redis cache
 redis_cache = asyncio.from_url(

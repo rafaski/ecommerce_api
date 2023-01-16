@@ -1,9 +1,9 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, Any, List
+from typing import Optional, Any
 from datetime import datetime
 from uuid import uuid4
 
-from ecommerce_api.enums import ProductCategory, UserType
+from ecommerce_api.enums import ProductCategory, UserType, OrderStatus
 
 
 class Output(BaseModel):
@@ -21,11 +21,15 @@ class User(BaseModel):
     """
     email: EmailStr
     password: str
-    orders: List[dict]
 
     @property
     def type(self) -> str:
-        return UserType.CUSTOMER
+        return UserType.ADMIN
+
+    def dict(self, *args, **kwargs):
+        _dict = super().dict()
+        _dict.update({"type": self.type})
+        return _dict
 
     class Config:
         """
@@ -44,12 +48,20 @@ class Product(BaseModel):
     """
     Product schema
     """
-    id: str = str(uuid4())[:8]
     name: str
     quantity: int = Field(ge=0)
     category: ProductCategory
     description: Optional[str] = None
     price: float
+
+    @property
+    def id(self) -> str:
+        return str(uuid4())[:8]
+
+    def dict(self, *args, **kwargs):
+        _dict = super().dict()
+        _dict.update({"id": self.id})
+        return _dict
 
     class Config:
         orm_true = True
@@ -60,13 +72,18 @@ class Order(BaseModel):
     Order schema
     """
     id: str = str(uuid4())[:8]
-    created_date: datetime
-    total_price: float
+    total_price: float = 0.0
+    status: OrderStatus = OrderStatus.IN_PROGRESS
     user_email: str
-    status: str
-    product_id: str
-    products: List[Product] = []
-    total_items: int = Field(ge=1)
+
+    @property
+    def created_date(self) -> datetime:
+        return datetime.now()
+
+    def dict(self, *args, **kwargs):
+        _dict = super().dict()
+        _dict.update({"created_date": self.created_date})
+        return _dict
 
     class Config:
         orm_true = True

@@ -70,18 +70,18 @@ at index page.
 
 ### User endpoints
 
-| Method | Endpoint                   | Description                       |
-|--------|----------------------------|-----------------------------------|
-| POST   | /signup                    | User sign up                      |
-| POST   | /login                     | User login                        |
-| GET    | /products/all              | Get all products                  |
-| GET    | /products/{product_id}     | Get a product                     |
-| GET    | /products/{category}       | Search products by category       |
-| GET    | /order/add                 | Add product to cart               |
-| GET    | /order/{email}             | Returns all items in user's  cart |
-| DELETE | /order/remove/{product_id} | Removes item from cart            |
-| POST   | /order/cancel/{order_id}   | Cancels order                     |
-| POST   | /order/submit              | Submit new order                  |
+| Method | Endpoint                      | Description                       |
+|--------|-------------------------------|-----------------------------------|
+| POST   | /signup                       | User sign up                      |
+| POST   | /login                        | User login                        |
+| GET    | /products/all                 | Get all products                  |
+| GET    | /products/{product_id}        | Get a product                     |
+| GET    | /products/category/{category} | Search products by category       |
+| GET    | /order/add/{product_id}       | Add product to cart               |
+| GET    | /order/{email}                | Returns all items in user's  cart |
+| DELETE | /order/remove/{product_id}    | Removes item from cart            |
+| POST   | /order/cancel/{order_id}      | Cancels order                     |
+| POST   | /order/submit                 | Submit new order                  |
 
 
 ## Status codes

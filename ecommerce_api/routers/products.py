@@ -38,7 +38,7 @@ async def get_by_id(
     return Output(success=True, results=product)
 
 
-@router.get("/products/{category}", response_model=Output)
+@router.get("/products/category/{category}", response_model=Output)
 async def get_by_category(
     category: ProductCategory,
     data: JWTData = Depends(authorize_token)

@@ -9,8 +9,6 @@ from ecommerce_api.settings import DATABASE_URL
 
 Base = declarative_base()
 
-database = None
-
 
 def init_db() -> None:
     """
@@ -29,22 +27,24 @@ def database_operation(func):
     """
     @wraps(func)
     def _database_operation(*args, **kwargs):
-        if database is None:
-            init_db()
-        open_connection = database.session()
+        # if database is None:
+        #     init_db()
+        # open_connection = database.session()
         try:
-            return func(open_connection, *args, **kwargs)
+            # return func(db=open_connection, *args, **kwargs)
+            return func(db=database.session, *args, **kwargs)
         except Exception as e:
             print(e)
-            open_connection.rollback()
+            # open_connection.rollback()
+            database.session.rollback()
             raise
-        finally:
-            open_connection.close()
+        # finally:
+        #     open_connection.close()
     return _database_operation
 
 
 class Database:
-    session: Optional[sessionmaker] = None
+    session = None
     engine = None
 
     def __init__(self, database_url: str):
@@ -58,13 +58,14 @@ class Database:
         self.engine = create_engine(
             DATABASE_URL, connect_args={"check_same_thread": False}
         )
-        self.session = sessionmaker(
+        session_maker = sessionmaker(
             autocommit=False,
             autoflush=False,
             bind=self.engine
         )
         # Create all tables that do not already exist
         Base.metadata.create_all(self.engine)
+        self.session = session_maker()
 
     def dispose_session(self):
         """
@@ -74,3 +75,5 @@ class Database:
         self.engine.dispose()
         self.session = None
 
+
+database: Optional[Database] = None
