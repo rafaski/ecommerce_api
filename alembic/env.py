@@ -8,7 +8,7 @@ from alembic import context
 from ecommerce_api.settings import DATABASE_URL
 from ecommerce_api.sql.database import Base
 from ecommerce_api.sql.models import (
-    User, Product, Cart, CartItems, Order, OrderDetails
+    User, Product, Order
 )
 
 # this is the Alembic Config object, which provides
