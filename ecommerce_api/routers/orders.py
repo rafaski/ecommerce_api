@@ -94,7 +94,7 @@ async def get_all(request: Request, data: JWTData = Depends(authorize_token)):
 
 @router.get("/order/{order_id}", response_model=Output)
 @admin_access_only
-async def get_all(
+async def get(
         request: Request,
         order_id: str, data:
         JWTData = Depends(authorize_token)

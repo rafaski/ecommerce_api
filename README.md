@@ -11,7 +11,7 @@ E-commerce API built with FastAPI.
 The main reason for creating this application was to learn new technologies 
 and build a real-world application from scratch.
 
-Main features:
+#### Main features:
 - Built with `FastAPI`
 - Data storage in `SQLite` database with `SQLAlchemy`
 - Database migration and versioning with `Alembic`
@@ -19,19 +19,32 @@ Main features:
 - Data validation with `Pydantic` models
 - Password hashing with `CryptContext`
 - Custom error handling
-- Order notification with `Celery` task queuing 
-- `RabbitMQ` and `Redis` as the brokers
 - Slack notification of new orders with async `httpx`
+#### To be implemented:
+- distributed task queuing with `Celery` and `RabbitMQ`
+
 
 ### E-commerce API
 E-commerce API allows you to:
 
-- as a user: signup and login to use services
-- as a user: search for products, add products to cart, make order
-- as admin: perform all basic operations such as create, get, update and delete on:
-  - product inventory
-  - orders
-  - users
+#### As a user: 
+- Sign up and login to use services
+- Search for products by id, name and category,
+- Add items to cart,
+- Remove items from cart,
+- Get all items from cart,
+- Cancel order,
+- Submit order
+#### As admin: 
+- Get a list of all registered users
+- Get user info
+- Delete user's account
+- Create new product
+- Update product
+- Delete product from inventory
+- Get all orders
+- Get order from order id
+
 
 ### Authentication
 As a user you will need signup. To access user related endpoints you will need to login with `Oauth2` and access token.
