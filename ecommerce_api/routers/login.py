@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 from ecommerce_api.schemas import Output, User
-from ecommerce_api.auth.password import verify
+from ecommerce_api.auth.user_pass import verify
 from ecommerce_api.errors import Unauthorized, BadRequest
 from ecommerce_api.sql.operations import UserOperations
 from ecommerce_api.auth.access import create_token

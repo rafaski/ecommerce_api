@@ -6,7 +6,7 @@ from ecommerce_api.schemas import User, Product, Order
 from ecommerce_api.sql.database import database_operation
 from ecommerce_api.errors import NotFound, BadRequest
 from ecommerce_api.enums import OrderStatus
-from ecommerce_api.auth.password import to_hash
+from ecommerce_api.auth.user_pass import to_hash
 
 
 class UserOperations:
