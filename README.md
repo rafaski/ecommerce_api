@@ -110,3 +110,43 @@ at index page.
 
 ## Testing
 You can test api with `Postman` and `Insomnia`
+
+## Examples
+POST `/products/new`
+```json
+{
+	"success": true,
+	"message": null,
+	"results": {
+		"name": "iPhone 14 256GB",
+		"quantity": 100,
+		"category": "phones",
+		"description": "New iPhone",
+		"price": 1000.0,
+		"id": "0f099782"
+	}
+}
+```
+GET `/products/all`
+```json
+{
+	"success": true,
+	"message": null,
+	"results": {
+		"name": "iPhone 14 256GB",
+		"quantity": 93,
+		"category": "phones",
+		"description": "New iPhone",
+		"price": 1000.0,
+		"id": "0f099782"
+	}
+}
+```
+GET `/order/add/0f099782`
+```json
+{
+	"success": true,
+	"message": "Item added to cart",
+	"results": null
+}
+```
