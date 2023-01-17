@@ -19,7 +19,7 @@ class UserOperations:
     def create(db: Session, user: User) -> None:
         """Create new user"""
         user.password = to_hash(user.password)
-        db.add(models.User(user.dict()))
+        db.add(models.User(**user.dict()))
         db.commit()
 
     @staticmethod
