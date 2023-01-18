@@ -1,7 +1,5 @@
 # E-commerce API
 
-### ---- WORK IN PROGRESS ----
-
 This application was built for educational purposes and is not intended for production use.
 
 ## Overview
@@ -10,6 +8,8 @@ E-commerce API built with FastAPI.
 ### Motives
 The main reason for creating this application was to learn new technologies 
 and build a real-world application from scratch.
+The main emphasis was put at complex `SQLAlchemy` operations, table relationships, 
+data migration with `Alembic` and complex authentication with `oauth2` and `JWTs`
 
 #### Main features:
 - Built with `FastAPI`
