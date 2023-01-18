@@ -47,8 +47,7 @@ E-commerce API allows you to:
 
 
 ### Authentication
-As a user you will need signup. To access user related endpoints you will need to login with `Oauth2` and access token.
-To access endpoints dedicated for `admin` you'll need admin credentials. You can pass them via `HTTPBasicAuth`.
+As a user you will need to signup. To access e-commerce related endpoints you will need to login with `Oauth2` and receive access token.
 
 ### Dependencies
 Dependency management is handled using `requirements.txt` file. 
