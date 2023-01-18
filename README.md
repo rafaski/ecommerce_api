@@ -149,3 +149,6 @@ GET `/order/add/0f099782`
 	"results": null
 }
 ```
+
+## Swagger UI
+![png](img/swagger_ui.PNG)
