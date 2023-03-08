@@ -1,7 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from typing import Optional
 from functools import wraps
 
 from ecommerce_api.settings import DATABASE_URL
@@ -76,4 +75,4 @@ class Database:
         self.session = None
 
 
-database: Optional[Database] = None
+database: Database | None = None

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List
 
 from ecommerce_api.sql import models
 from ecommerce_api.schemas import User, Product, Order
@@ -24,7 +24,7 @@ class UserOperations:
 
     @staticmethod
     @database_operation
-    def get_by_email(db: Session, email: str) -> Optional[models.User]:
+    def get_by_email(db: Session, email: str) -> models.User | None:
         """Get user by email"""
         user = db.query(models.User).filter(
             models.User.email == email
@@ -33,7 +33,7 @@ class UserOperations:
 
     @staticmethod
     @database_operation
-    def get_all(db: Session) -> Optional[List[models.User]]:
+    def get_all(db: Session) -> List[models.User] | None:
         """Get all users from db"""
         all_users = db.query(models.User).all()
         return all_users
@@ -63,7 +63,7 @@ class ProductOperations:
 
     @staticmethod
     @database_operation
-    def get_all(db: Session) -> Optional[List[models.Product]]:
+    def get_all(db: Session) -> List[models.Product] | None:
         all_products = db.query(models.Product).all()
         return all_products
 
@@ -72,7 +72,7 @@ class ProductOperations:
     def get_by_id(
         db: Session,
         product_id: str
-    ) -> Optional[models.Product]:
+    ) -> models.Product | None:
         """Get product by id"""
         product = db.query(models.Product).filter(
             models.Product.id == product_id
@@ -84,7 +84,7 @@ class ProductOperations:
     def get_by_category(
         db: Session,
         category: str
-    ) -> Optional[List[models.Product]]:
+    ) -> List[models.Product] | None:
         """Get product by category"""
         matching_products = db.query(models.Product).filter(
             models.Product.category == category

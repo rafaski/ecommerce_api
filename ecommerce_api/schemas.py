@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, Any
+from typing import Any
 from datetime import datetime
 from uuid import uuid4
 
@@ -11,8 +11,8 @@ class Output(BaseModel):
     default endpoint return schema
     """
     success: bool
-    message: Optional[str] = None
-    results: Optional[Any] = None
+    message: str | None = None
+    results: Any = None
 
 
 class User(BaseModel):
@@ -51,7 +51,7 @@ class Product(BaseModel):
     name: str
     quantity: int = Field(ge=0)
     category: ProductCategory
-    description: Optional[str] = None
+    description: str | None = None
     price: float
 
     @property
@@ -101,7 +101,7 @@ class JWTData(BaseModel):
     """
     Token schema that accepts user email
     """
-    email: Optional[str]
+    email: str | None
     user_type: UserType
 
 
