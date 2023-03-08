@@ -12,7 +12,7 @@ class Output(BaseModel):
     """
     success: bool
     message: str | None = None
-    results: Any = None
+    results: Any | None = None
 
 
 class User(BaseModel):

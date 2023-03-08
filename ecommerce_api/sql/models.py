@@ -1,11 +1,9 @@
 from sqlalchemy.orm import relationship
 from sqlalchemy import (
-    Column, Integer, String, Text, Float, ForeignKey, DateTime
+    Column, Integer, String, Text, Float, ForeignKey
 )
-from datetime import datetime
 
 from ecommerce_api.sql.database import Base
-from ecommerce_api.enums import OrderStatus
 
 
 class User(Base):
