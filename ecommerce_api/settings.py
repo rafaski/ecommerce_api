@@ -1,10 +1,12 @@
 import os
 from typing import Any
 from dotenv import load_dotenv
+from functools import lru_cache
 
 load_dotenv()
 
 
+@lru_cache()
 def load_variable(name: str, default: Any = None) -> str:
     variable = os.getenv(name, default)
     if variable is None:
